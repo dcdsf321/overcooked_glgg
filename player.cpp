@@ -10,6 +10,7 @@
 using namespace THUAI3;
 Protobuf::Talent initTalent = Protobuf::Talent::Cook;//指定人物天赋。选手代码必须定义此变量，否则报错
 
+//保存初始时的地图，即只有各类墙体的位置信息
 int map_start[50][50]= {
 { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
 { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
@@ -74,6 +75,7 @@ int map_start[50][50]= {
 //左上，上，右上，左，右，左下，下，右下
 double stepx[4] = { 0,-1,1,0 };
 double stepy[4] = { 1,0,0,-1 };
+//上，左，右，下
 
 int vis_pre_x[51][51], vis_pre_y[51][51];
 /*
@@ -166,7 +168,7 @@ Direction calcdirection(int x1, int y1, int x2, int y2) {
 	if (x1 - 1 == x2 && y1 + 1 == y2) return RightDown;
 }
 
-void Move_player(double sx, double sy, double ex, double ey) {
+void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xposition, ex=end_position
 	/*for (int i=0;i<=50;++i)
 		for (int j = 0; j <= 50; ++j) {
 			F_value[i][j] = abs(ex-i)+abs(ey-j);
@@ -186,32 +188,31 @@ void Move_player(double sx, double sy, double ex, double ey) {
 	}*/
 	for (int i=1;i<=50;++i)
 		for (int j = 1; j <= 50; ++j) {
-			vis_pre_x[i][j] = 0;
-			vis_pre_y[i][j] = 0;
+			vis_pre_x[i][j] = 0;				//保存进入队列时前置节点的x坐标
+			vis_pre_y[i][j] = 0;				//保存进入队列时前置节点的y坐标
 		}
-	queue<int> qx, qy; bool flag = 0;
+	queue<int> qx, qy; bool flag = 0;			//qx,qy为两分量坐标的队列，flag 判断bfs时是否到达目标节点
 	qx.push(int(sx)); qy.push(int(sy)); 
 	vis_pre_x[int(sx)][int(sy)] = sx; vis_pre_y[int(sx)][int(sy)] = sy;
 	while (!qx.empty()&&flag==0) {
 		int nowx = qx.front(),nowy=qy.front();
 		qx.pop(); qy.pop();
-		for (int i = 0; i < 4; ++i) {
-			int xx = nowx + stepx[i], yy = nowy + stepy[i];
-			if (xx >= 1 && xx <= 49 && yy >= 1 && yy <= 49 && map_start[xx][yy] == 0&&vis_pre_x[xx][yy]==0) {
-				vis_pre_x[xx][yy] = nowx; vis_pre_y[xx][yy] = nowy;
-				if (xx == int(ex) && yy == int(ey)) {
+		for (int i = 0; i < 4; ++i) { //目前只考虑上下左右
+			int newx = nowx + stepx[i], newy = nowy + stepy[i];
+			if (newx >= 1 && newx <= 49 && newy >= 1 && newy <= 49 && map_start[newx][newy] == 0&&vis_pre_x[newx][newy]==0) {
+				vis_pre_x[newx][newy] = nowx; vis_pre_y[newx][newy] = nowy;
+				if (newx == int(ex) && newy == int(ey)) {	//已到达目标节点
 					flag = 1;
 					break;
 				}
-				qx.push(xx); qy.push(yy);
+				qx.push(newx); qy.push(newy);
 			}
 		}
 	}
-	int xx = int(ex), yy = int(ey);
-	Direction next[51][51];
-	while (!(xx == int(sx) && yy == int(sy))) {
-		int xxx = vis_pre_x[xx][yy], yyy = vis_pre_y[xx][yy];
-		next[xxx][yyy] = calcdirection(xxx, yyy, xx, yy);
+	int nowx = int(ex), nowy = int(ey);
+	Direction next[51][51];			//保存行走方向
+	while (!(nowx == int(sx) && nowy == int(sy))) { //反向遍历来保存行走路径
+		next[vis_pre_x[nowx][nowy]][vis_pre_y[nowx][nowy]] = calcdirection(vis_pre_x[nowx][nowy], vis_pre_y[nowx][nowy], nowx, nowy); //计算前后节点相对位置即得到所需行走方向
 		//cout << "(" << xxx << "," << yyy << ")-->(" << xx << "," << yy << ")   " << endl;
 		/*switch (next[xxx][yyy]) {
 			case Right: cout << "Right" << endl << endl; break;
@@ -223,10 +224,10 @@ void Move_player(double sx, double sy, double ex, double ey) {
 			case Down: cout << "Down" << endl << endl; break;
 			case RightDown: cout << "RightDown" << endl << endl;
 		}*/
-		xx = xxx; yy = yyy;
+		nowx = vis_pre_x[nowx][nowy]; nowy = vis_pre_y[nowx][nowy];
 	}
-	
-	while (!(xx == int(ex) && yy == int(ey))) {
+	//真正的行走操作
+	while (!(nowx == int(ex) && nowy == int(ey))) {
 		/*switch (next[xx][yy]) {
 			case Right: move(Right, 200); Sleep(400); break;
 			case RightUp: move(RightUp, 200); Sleep(400); break;
@@ -237,10 +238,10 @@ void Move_player(double sx, double sy, double ex, double ey) {
 			case Down: move(Down, 200); Sleep(400); break;
 			case RightDown: move(RightDown, 200); Sleep(400);
 		}*/
-		move(next[xx][yy], 200);
-		Sleep(400);
-		xx = PlayerInfo.position.x;
-		yy = PlayerInfo.position.y;
+		move(next[nowx][nowy], 200);  //每次只移动一个单位 //速度为5的情况下
+		Sleep(400);					  //挂起以等待操作完成
+		nowx = PlayerInfo.position.x; //迭代
+		nowy = PlayerInfo.position.y;
 		/*switch (next[xx][yy]) {
 		case Right: xx = xx + 1; break;
 		case RightUp: xx = xx + 1; yy = yy + 1; break;
@@ -251,14 +252,14 @@ void Move_player(double sx, double sy, double ex, double ey) {
 		case Down: yy = yy - 1; break;
 		case RightDown: xx = xx + 1; yy = yy - 1;
 		}*/
-		Print_player();
+		Print_player();				 //查看目前状态，用于调试
 	}
 }
 
 void play()
 {
 	Print_player();
-	Move_player(2.5, 1.5, 40, 40);
+	Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
 	PauseCommunication();
 	Sleep(10000);
 }
