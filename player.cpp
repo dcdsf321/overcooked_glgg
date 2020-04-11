@@ -69,9 +69,12 @@ int map_start[50][50]= {
 // 5 : 障碍，不可穿过，不透明
 // 6 : 桌子，不可穿过，可放置物品
 
-double stepx[8] = { -1,0,1,-1,1,-1,1 };
-double stepy[8] = { 1,1,1,0,0,-1,-1,-1 };
+//double stepx[8] = { -1,0,1,-1,1,-1,1 };
+//double stepy[8] = { 1,1,1,0,0,-1,-1,-1 };
 //左上，上，右上，左，右，左下，下，右下
+double stepx[4] = { 0,-1,1,0 };
+double stepy[4] = { 1,0,0,-1 };
+
 int vis_pre_x[51][51], vis_pre_y[51][51];
 /*
 class XY_position {
@@ -192,7 +195,7 @@ void Move_player(double sx, double sy, double ex, double ey) {
 	while (!qx.empty()&&flag==0) {
 		int nowx = qx.front(),nowy=qy.front();
 		qx.pop(); qy.pop();
-		for (int i = 0; i < 8; ++i) {
+		for (int i = 0; i < 4; ++i) {
 			int xx = nowx + stepx[i], yy = nowy + stepy[i];
 			if (xx >= 1 && xx <= 49 && yy >= 1 && yy <= 49 && map_start[xx][yy] == 0&&vis_pre_x[xx][yy]==0) {
 				vis_pre_x[xx][yy] = nowx; vis_pre_y[xx][yy] = nowy;
@@ -234,7 +237,7 @@ void Move_player(double sx, double sy, double ex, double ey) {
 			case Down: move(Down, 200); Sleep(400); break;
 			case RightDown: move(RightDown, 200); Sleep(400);
 		}
-		Sleep(5000);
+		//Sleep(5000);
 		//xx = PlayerInfo.position.x;
 		//yy = PlayerInfo.position.y;
 		switch (next[xx][yy]) {
@@ -271,6 +274,11 @@ void play()
 	//	Sleep(100);
 	//	Print_player();
 	//}Print_player();
+	/*for (int i = 1; i <= 4; ++i) {
+		move(RightUp, 200*sqrt(2));
+		Sleep(1000);
+		Print_player();
+	}*/
 	PauseCommunication();
 	Sleep(10000);
 }
