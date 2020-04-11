@@ -184,11 +184,11 @@ void Move_player(double sx, double sy, double ex, double ey) {
 			if (xp>=1&&xp<=)
 		}
 	}*/
-	/*for (int i=0;i<=50;++i)
-		for (int j = 0; j <= 50; ++j) {
+	for (int i=1;i<=50;++i)
+		for (int j = 1; j <= 50; ++j) {
 			vis_pre_x[i][j] = 0;
 			vis_pre_y[i][j] = 0;
-		}*/
+		}
 	queue<int> qx, qy; bool flag = 0;
 	qx.push(int(sx)); qy.push(int(sy)); 
 	vis_pre_x[int(sx)][int(sy)] = sx; vis_pre_y[int(sx)][int(sy)] = sy;
@@ -212,8 +212,8 @@ void Move_player(double sx, double sy, double ex, double ey) {
 	while (!(xx == int(sx) && yy == int(sy))) {
 		int xxx = vis_pre_x[xx][yy], yyy = vis_pre_y[xx][yy];
 		next[xxx][yyy] = calcdirection(xxx, yyy, xx, yy);
-		cout << "(" << xxx << "," << yyy << ")-->(" << xx << "," << yy << ")   " << endl;
-		switch (next[xxx][yyy]) {
+		//cout << "(" << xxx << "," << yyy << ")-->(" << xx << "," << yy << ")   " << endl;
+		/*switch (next[xxx][yyy]) {
 			case Right: cout << "Right" << endl << endl; break;
 			case RightUp: cout << "RightUp" << endl << endl; break;
 			case Up: cout << "Up" << endl << endl; break;
@@ -222,12 +222,12 @@ void Move_player(double sx, double sy, double ex, double ey) {
 			case LeftDown: cout << "LeftDown" << endl << endl; break;
 			case Down: cout << "Down" << endl << endl; break;
 			case RightDown: cout << "RightDown" << endl << endl;
-		}
+		}*/
 		xx = xxx; yy = yyy;
 	}
 	
 	while (!(xx == int(ex) && yy == int(ey))) {
-		switch (next[xx][yy]) {
+		/*switch (next[xx][yy]) {
 			case Right: move(Right, 200); Sleep(400); break;
 			case RightUp: move(RightUp, 200); Sleep(400); break;
 			case Up: move(Up, 200); Sleep(400); break;
@@ -236,11 +236,12 @@ void Move_player(double sx, double sy, double ex, double ey) {
 			case LeftDown: move(LeftDown, 200); Sleep(400); break;
 			case Down: move(Down, 200); Sleep(400); break;
 			case RightDown: move(RightDown, 200); Sleep(400);
-		}
-		//Sleep(5000);
-		//xx = PlayerInfo.position.x;
-		//yy = PlayerInfo.position.y;
-		switch (next[xx][yy]) {
+		}*/
+		move(next[xx][yy], 200);
+		Sleep(400);
+		xx = PlayerInfo.position.x;
+		yy = PlayerInfo.position.y;
+		/*switch (next[xx][yy]) {
 		case Right: xx = xx + 1; break;
 		case RightUp: xx = xx + 1; yy = yy + 1; break;
 		case Up: yy = yy + 1; break;
@@ -249,7 +250,7 @@ void Move_player(double sx, double sy, double ex, double ey) {
 		case LeftDown: xx = xx - 1; yy = yy - 1; break;
 		case Down: yy = yy - 1; break;
 		case RightDown: xx = xx + 1; yy = yy - 1;
-		}
+		}*/
 		Print_player();
 	}
 }
@@ -257,28 +258,7 @@ void Move_player(double sx, double sy, double ex, double ey) {
 void play()
 {
 	Print_player();
-	//THUAI3::move(Up, 50);
-	//PauseCommunication();
-	//cout << "test" << endl;
-	//Sleep(1000);
-	//Print_player();
-	//cout << "the task now:" << task_list.back() << endl;
-	//MapInfo infom;
-	//Obj objjj = infom.get_mapcell(7.5,41.5).back();
-	//cout << objjj.dish << endl;
-	//char pauseee;
-	//cin >> pauseee;
 	Move_player(2.5, 1.5, 40, 40);
-	//for (int i = 1; i <= 4; ++i) {
-	//	move(Right, 50);
-	//	Sleep(100);
-	//	Print_player();
-	//}Print_player();
-	/*for (int i = 1; i <= 4; ++i) {
-		move(RightUp, 200*sqrt(2));
-		Sleep(1000);
-		Print_player();
-	}*/
 	PauseCommunication();
 	Sleep(10000);
 }
