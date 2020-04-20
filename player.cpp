@@ -108,6 +108,7 @@ double stepy[4] = { 1,0,0,-1 };
 int checkdish[50][50];
 DishType TASK;
 bool checkbegin;
+string infonow;
 int vis_pre_x[51][51], vis_pre_y[51][51];
 
 void Begin() {
@@ -158,12 +159,24 @@ int dishsize(DishType dd) {
     if (dd == Cake || dd == FruitSalad) return 4;
 }
 
+int dish_cooktime(DishType dd) {
+    if (dd == Flour|| dd == Noodle|| dd == Bread||dd==CookedRice||dd==Ketchup||dd==Cream||dd==TomatoFriedEgg) return 10000;
+    if (dd == PlumJuice || dd == StrawberryIcecream || dd == SugarCoatedHaws) return 10000;
+    if (dd == TomatoFriedEggNoodle || dd == FrenchFries || dd == PopcornChicken || dd == AgaricFriedEgg) return 15000;
+    if (dd == BeefNoodle || dd == OverRice || dd == YellowPheasant || dd == Barbecue || dd == Hamburger || dd == FruitSalad) return 20000;
+    if (dd == Cake) return 30000;
+    if (dd == SpicedPot) return 60000;
+}
+
 void info_clear() {
     for (int i = 0; i <= 15; i++) {
         PlayerInfo.recieveText[i] = '1';
+        infonow[i] = '1';
     }
-    for (int i = 0; i < dishsize(TASK); i++)
+    for (int i = 0; i < dishsize(TASK); i++){
         PlayerInfo.recieveText[i] = '0';
+        infonow[i] = '0';
+    }
 }
 
 void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息添加到传递信息再传递
@@ -173,11 +186,18 @@ void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息�
     speakToFriend(str1);
 }
 
-bool info_decide() {
-    for (int i = 0; i <= 3; i++)
-        if (PlayerInfo.recieveText[i] == '0')
+bool info_decide(DishType dd) {
+    for (int i = 0; i <= dishsize(dd); i++)
+        if (infonow[i] == '0')
             return 0;
     return 1;
+}
+
+void player_wait(int Tim) {
+    for (int i = 1; i <= Tim / 100; ++i) {
+        move(Left, 50);
+        move(Right, 50);
+    }move(Right, 0);
 }
 
 Direction calcdirection(int x1, int y1, int x2, int y2) {
@@ -241,10 +261,10 @@ void task_finish(DishType task) {
     double cook_x = 8.5, cook_y = 24.5;
     double spawn_x = 7.5, spawn_y = 41.5;
     info_clear(); Begin();
-    while (!info_decide()) {
+    while (!info_decide(task)) {
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x - 1, spawn_y);
         THUAI3::move(Right, 0); Sleep(1000);
-        bool flaggg = 0;
+        /*bool flaggg = 0;
         while (!flaggg) {
             list<Obj> grid_info = mapp.get_mapcell(spawn_x, spawn_y);
             //cout << "size= "<<grid_info.size() << endl;
@@ -253,14 +273,23 @@ void task_finish(DishType task) {
             
             //info_add(testtt.dish);
             Sleep(1000); Print_player(); break;
-        }
+        }*/
+        pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish);
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
         THUAI3::move(Right, 50); Sleep(1000);
-        THUAI3::put(1, 0, true); Sleep(1000); Print_player(); break;
+        if (checkdish[task][PlayerInfo.dish]) {
+            THUAI3::put(1, 0, true);
+            infonow[checkdish[task][PlayerInfo.dish] - 1] = '1';
+            cout << infonow << endl;
+        }else put(1, 1.57, true);
+        Sleep(1000); Print_player(); cout << task << endl;
     }
     THUAI3::use(0, 0, 0);
-    Sleep(10000);
-    THUAI3::pick(false, Block, DarkDish); Sleep(1000); Print_player();
+    Sleep(dish_cooktime(task)+100);//player_wait(dish_cooktime(task));//Sleep(dish_cooktime(task)+50);
+    THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
+    Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
+    while (task_list.back() != SugarCoatedHaws) Sleep(1000);
+    THUAI3::use(0, 0, 0);
 }
 
 void play()
@@ -271,11 +300,7 @@ void play()
         if (PlayerInfo.id & 1) {
             Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
             THUAI3::move(Right, 0);
-            for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
-                cout << *iter << endl; Sleep(10000);
-            //while (task_list.back() != Flour|| task_list.back() != CookedRice || task_list.back() != Ketchup || task_list.back() != Cream) Sleep(1000);
-            //while (task_list.back() != TomatoFriedEgg || task_list.back() != Barbecue || task_list.back() != PlumJuice || task_list.back() != FruitSalad) Sleep(1000);
-            task_finish(TomatoFriedEgg);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
+            task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
             PauseCommunication();
             Sleep(10000);
         }
