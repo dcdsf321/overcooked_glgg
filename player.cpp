@@ -104,10 +104,54 @@ int map_start[50][50] = {
 double stepx[4] = { 0,-1,1,0 };
 double stepy[4] = { 1,0,0,-1 };
 //上，左，右，下
+int cookbook[51][4] =
+{
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {1,0,0,0},
+    {20,0,0,0},
+    {20,4,0,0},
+    {2,0,0,0},
+    {3,0,0,0},
+    {5,0,0,0},
+    {3,4,0,0},
+    {26,21,0,0},
+    {11,21,0,0},
+    {23,12,18,0},
+    {23,13,14,0},
+    {12,15,0,0},
+    {14,24,0,0},
+    {8,9,0,0},
+    {22,11,15,0},
+    {10,25,0,0},
+    {13,24,0,0},
+    {16,4,0,0},
+    {4,20,25,10},
+    {9,0,0,0},
+    {6,7,3,10}
+};
 
 int checkdish[50][50];
 DishType TASK;
-bool checkbegin;
+bool checkbegin,tryfault;
 string infonow;
 int vis_pre_x[51][51], vis_pre_y[51][51];
 
@@ -177,6 +221,12 @@ void info_clear() {
         PlayerInfo.recieveText[i] = '0';
         infonow[i] = '0';
     }
+}
+
+bool checktask(DishType dd) {
+    for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
+        if (*iter == dd) return 1;
+    return 0;
 }
 
 void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息添加到传递信息再传递
@@ -255,41 +305,49 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
 }
 
 void task_finish(DishType task) {
+    for (int i = 0; i <dishsize(task); i++)
+    {
+        if (20 <= cookbook[task][i] &&)
+ =cookbook[task][i] && )
+    }
     Print_player(); cout << "Now Task is" << task << endl;
     TASK = task;
     MapInfo mapp;
     double cook_x = 8.5, cook_y = 24.5;
     double spawn_x = 7.5, spawn_y = 41.5;
     info_clear(); Begin();
-    while (!info_decide(task)) {
+    while (!info_decide(task)&&checktask(task)) {
+        if (((PlayerInfo.position.x - (cook_x - 1)) < 1e-7) && ((PlayerInfo.position.y - cook_y) < 1e-7)) {
+            THUAI3::move(Up, 0);
+            for (int i=0;i<dishsize(task);++i)
+                if (infonow[checkdish[task][cookbook[task][i]] - 1] == '0') {
+                    THUAI3::pick(false, Dish, cookbook[task][i]); Sleep(100);
+                    if (PlayerInfo.dish != 0) {
+                        THUAI3::move(Right, 50); Sleep(100);
+                        infonow[checkdish[task][PlayerInfo.dish] - 1] = '1';
+                        THUAI3::put(1, 0, true);
+                    }
+                }
+        }
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x - 1, spawn_y);
         THUAI3::move(Right, 0); Sleep(1000);
-        /*bool flaggg = 0;
-        while (!flaggg) {
-            list<Obj> grid_info = mapp.get_mapcell(spawn_x, spawn_y);
-            //cout << "size= "<<grid_info.size() << endl;
-            Obj testtt = grid_info.back(); cout << testtt.dish << endl;
-            pick(false, Block, testtt.dish); Sleep(1000);
-            
-            //info_add(testtt.dish);
-            Sleep(1000); Print_player(); break;
-        }*/
         pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish);
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
         THUAI3::move(Right, 50); Sleep(1000);
-        if (checkdish[task][PlayerInfo.dish]) {
-            THUAI3::put(1, 0, true);
+        if (checkdish[task][PlayerInfo.dish]&&infonow[checkdish[task][PlayerInfo.dish]-1]=='0') {
             infonow[checkdish[task][PlayerInfo.dish] - 1] = '1';
+            THUAI3::put(1, 0, true);
             cout << infonow << endl;
         }else put(1, 1.57, true);
         Sleep(1000); Print_player(); cout << task << endl;
     }
+    if (!checktask(task)) return;//{ tryfault = 1; return; }
     THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task)+100);//player_wait(dish_cooktime(task));//Sleep(dish_cooktime(task)+50);
+    Sleep(dish_cooktime(task)+100);
     THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
     Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
-    while (task_list.back() != SugarCoatedHaws) Sleep(1000);
-    THUAI3::use(0, 0, 0);
+    if (checktask(task)) THUAI3::use(0, 0, 0);
+    else put(1, 1.57, true);
 }
 
 void play()
@@ -300,7 +358,7 @@ void play()
         if (PlayerInfo.id & 1) {
             Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
             THUAI3::move(Right, 0);
-            task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
+            task_finish(task_list.back());//task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
             PauseCommunication();
             Sleep(10000);
         }
