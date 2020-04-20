@@ -354,8 +354,10 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
 void task_finish(DishType task) {
     for (int i = 0; i <dishsize(task); i++)
     {
-        if (20 <= cookbook[task][i] &&)
- =cookbook[task][i] && )
+        if (20 <= cookbook[task][i] && cookbook[task][i]<=25)
+        {
+            task_finish(cookbook[task][i]);
+        }
     }
     Print_player(); cout << "Now Task is" << task << endl;
     TASK = task;
@@ -391,10 +393,20 @@ void task_finish(DishType task) {
     if (!checktask(task)) return;//{ tryfault = 1; return; }
     THUAI3::use(0, 0, 0);
     Sleep(dish_cooktime(task)+100);
-    THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
-    Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
-    if (checktask(task)) THUAI3::use(0, 0, 0);
-    else put(1, 1.57, true);
+    if(task>=26)
+    {
+        THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
+        if (checktask(task)) THUAI3::use(0, 0, 0);
+        else put(1, 1.57, true);
+        return;
+    }
+    else 
+    {
+        THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
+        put(1, 1.57, true);
+        return;
+    }
 }
 
 void play()
