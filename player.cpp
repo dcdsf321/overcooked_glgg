@@ -39,7 +39,7 @@ Protobuf::Talent initTalent = Protobuf::Talent::Cook;//指定人物天赋。选�
 {int(Protobuf::OverCookedDish), {-10,60000,300000} },
  第二个参数为烹饪时间
  */
-//保存初始时的地图，即只有各类墙体的位置信息
+ //保存初始时的地图，即只有各类墙体的位置信息
 int map_start[50][50] = {
 { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
 { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5 },
@@ -151,7 +151,7 @@ int cookbook[51][4] =
 
 int checkdish[50][50];
 DishType TASK;
-bool checkbegin,tryfault;
+bool checkbegin, tryfault;
 string infonow;
 int vis_pre_x[51][51], vis_pre_y[51][51];
 
@@ -180,7 +180,7 @@ void Begin() {
     checkdish[40][6] = 1; checkdish[40][7] = 2; checkdish[40][3] = 3; checkdish[40][10] = 4;
 }
 
-int cookbook[50][4] = 
+int cookbook[50][4] =
 {
     {0,0,0,0},
     {0,0,0,0},
@@ -222,7 +222,7 @@ int cookbook[50][4] =
     {4,20,25,10},
     {9,0,0,0},
     {6,7,3,10}
-}
+};
 
 //输出人物当前信息
 void Print_player() {
@@ -237,6 +237,7 @@ void Print_player() {
     cout << "dish: " << PlayerInfo.dish << endl;
     cout << "tool: " << PlayerInfo.tool << endl;
     cout << "recieve_Text: " << PlayerInfo.recieveText << endl;
+    cout << "Task: " << TASK << endl;
     cout << "-----------------------------------------------------------------------------------" << endl;
 }
 
@@ -248,7 +249,7 @@ int dishsize(DishType dd) {
 }
 
 int dish_cooktime(DishType dd) {
-    if (dd == Flour|| dd == Noodle|| dd == Bread||dd==CookedRice||dd==Ketchup||dd==Cream||dd==TomatoFriedEgg) return 10000;
+    if (dd == Flour || dd == Noodle || dd == Bread || dd == CookedRice || dd == Ketchup || dd == Cream || dd == TomatoFriedEgg) return 10000;
     if (dd == PlumJuice || dd == StrawberryIcecream || dd == SugarCoatedHaws) return 10000;
     if (dd == TomatoFriedEggNoodle || dd == FrenchFries || dd == PopcornChicken || dd == AgaricFriedEgg) return 15000;
     if (dd == BeefNoodle || dd == OverRice || dd == YellowPheasant || dd == Barbecue || dd == Hamburger || dd == FruitSalad) return 20000;
@@ -261,7 +262,7 @@ void info_clear() {
         PlayerInfo.recieveText[i] = '1';
         infonow[i] = '1';
     }
-    for (int i = 0; i < dishsize(TASK); i++){
+    for (int i = 0; i < dishsize(TASK); i++) {
         PlayerInfo.recieveText[i] = '0';
         infonow[i] = '0';
     }
@@ -275,7 +276,7 @@ bool checktask(DishType dd) {
 
 void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息添加到传递信息再传递
     string str1 = PlayerInfo.recieveText;
-    str1[checkdish[TASK][cui]-1] = '1';
+    str1[checkdish[TASK][cui] - 1] = '1';
     PlayerInfo.recieveText = str1;
     speakToFriend(str1);
 }
@@ -352,23 +353,23 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
 
 
 void task_finish(DishType task) {
-    for (int i = 0; i <dishsize(task); i++)
+    TASK = task;
+    for (int i = 0; i < dishsize(task); i++)
     {
-        if (20 <= cookbook[task][i] && cookbook[task][i]<=25)
+        if (20 <= cookbook[task][i] && cookbook[task][i] <= 25)
         {
-            task_finish(cookbook[task][i]);
+            task_finish(DishType(cookbook[task][i]));
         }
     }
     Print_player(); cout << "Now Task is" << task << endl;
-    TASK = task;
     MapInfo mapp;
     double cook_x = 8.5, cook_y = 24.5;
     double spawn_x = 7.5, spawn_y = 41.5;
     info_clear(); Begin();
-    while (!info_decide(task)&&checktask(task)) {
+    while (!info_decide(task) && checktask(task)) {
         if (((PlayerInfo.position.x - (cook_x - 1)) < 1e-7) && ((PlayerInfo.position.y - cook_y) < 1e-7)) {
             THUAI3::move(Up, 0);
-            for (int i=0;i<dishsize(task);++i)
+            for (int i = 0; i < dishsize(task); ++i)
                 if (infonow[checkdish[task][cookbook[task][i]] - 1] == '0') {
                     THUAI3::pick(false, Dish, cookbook[task][i]); Sleep(100);
                     if (PlayerInfo.dish != 0) {
@@ -383,17 +384,18 @@ void task_finish(DishType task) {
         pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish);
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
         THUAI3::move(Right, 50); Sleep(1000);
-        if (checkdish[task][PlayerInfo.dish]&&infonow[checkdish[task][PlayerInfo.dish]-1]=='0') {
+        if (checkdish[task][PlayerInfo.dish] && infonow[checkdish[task][PlayerInfo.dish] - 1] == '0') {
             infonow[checkdish[task][PlayerInfo.dish] - 1] = '1';
             THUAI3::put(1, 0, true);
             cout << infonow << endl;
-        }else put(1, 1.57, true);
+        }
+        else put(1, 1.57, true);
         Sleep(1000); Print_player(); cout << task << endl;
     }
     if (!checktask(task)) return;//{ tryfault = 1; return; }
     THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task)+100);
-    if(task>=26)
+    Sleep(dish_cooktime(task) + 100);
+    if (task >= 26)
     {
         THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
@@ -401,7 +403,7 @@ void task_finish(DishType task) {
         else put(1, 1.57, true);
         return;
     }
-    else 
+    else
     {
         THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
         put(1, 1.57, true);
