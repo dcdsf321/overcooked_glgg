@@ -140,7 +140,7 @@ void info_clear() {
     }
     for (int i = 0; i < length; i++)
         PlayerInfo.recieveText[i] = '0';
-    PlayerInfo.recieveText[5]
+    //PlayerInfo.recieveText[5]
 }
 
 void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息添加到传递信息再传递
@@ -221,7 +221,7 @@ void task_finish(DishType task) {
     info_clear(); Begin();
     while (!info_decide()) {
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x - 1, spawn_y);
-        THUAI3::move(Right, 50); Sleep(1000);
+        THUAI3::move(Right, 0); Sleep(1000);
         bool flaggg = 0;
         while (!flaggg) {
             list<Obj> grid_info = mapp.get_mapcell(spawn_x, spawn_y);
@@ -243,15 +243,18 @@ void task_finish(DishType task) {
                     }
                 }
             }*/
-            pick(true, Block, testtt.dish); Sleep(1000);
-            info_add(testtt.dish);
+            pick(false, Block, testtt.dish); Sleep(1000);
+            
+            //info_add(testtt.dish);
             Sleep(1000); Print_player(); break;
         }
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
         THUAI3::move(Right, 50); Sleep(1000);
-        THUAI3::put(1, 0, true); Sleep(1000); Print_player();
+        THUAI3::put(1, 0, true); Sleep(1000); Print_player(); break;
     }
     THUAI3::use(0, 0, 0);
+    Sleep(10000);
+    THUAI3::pick(false, Block, DarkDish); Sleep(1000); Print_player();
 }
 
 void play()
