@@ -152,8 +152,8 @@ int cookbook[51][4] =
 int checkdish[50][50];
 DishType TASK;
 bool checkbegin, tryfault;
-string infonow;
 int vis_pre_x[51][51], vis_pre_y[51][51];
+string INFO;
 
 void Begin() {
     checkbegin = 1;
@@ -180,50 +180,6 @@ void Begin() {
     checkdish[40][6] = 1; checkdish[40][7] = 2; checkdish[40][3] = 3; checkdish[40][10] = 4;
 }
 
-int cookbook[50][4] =
-{
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {1,0,0,0},
-    {20,0,0,0},
-    {20,4,0,0},
-    {2,0,0,0},
-    {3,0,0,0},
-    {5,0,0,0},
-    {3,4,0,0},
-    {26,21,0,0},
-    {11,21,0,0},
-    {23,12,18,0},
-    {23,13,14,0},
-    {12,15,0,0},
-    {14,24,0,0},
-    {8,9,0,0},
-    {22,11,15,0},
-    {10,25,0,0},
-    {13,24,0,0},
-    {16,4,0,0},
-    {4,20,25,10},
-    {9,0,0,0},
-    {6,7,3,10}
-};
-
 //输出人物当前信息
 void Print_player() {
     cout << "-----------------------------------------------------------------------------------" << endl;
@@ -238,6 +194,7 @@ void Print_player() {
     cout << "tool: " << PlayerInfo.tool << endl;
     cout << "recieve_Text: " << PlayerInfo.recieveText << endl;
     cout << "Task: " << TASK << endl;
+    cout << "INFO: " << INFO << endl;
     cout << "-----------------------------------------------------------------------------------" << endl;
 }
 
@@ -257,7 +214,7 @@ int dish_cooktime(DishType dd) {
     if (dd == SpicedPot) return 60000;
 }
 
-void info_clear() {
+/*void info_clear() {
     for (int i = 0; i <= 15; i++) {
         PlayerInfo.recieveText[i] = '1';
         infonow[i] = '1';
@@ -266,7 +223,7 @@ void info_clear() {
         PlayerInfo.recieveText[i] = '0';
         infonow[i] = '0';
     }
-}
+}*/
 
 bool checktask(DishType dd) {
     for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
@@ -281,7 +238,7 @@ void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息�
     speakToFriend(str1);
 }
 
-bool info_decide(DishType dd) {
+bool info_decide(DishType dd,string infonow) {
     for (int i = 0; i <= dishsize(dd); i++)
         if (infonow[i] == '0')
             return 0;
@@ -352,22 +309,30 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
 
 
 
-void task_finish(DishType task) {
-    TASK = task;
+void task_finish(DishType task,DishType task_root) {
+    TASK = task; string infonow;
+    for (int i = 0; i <= 15; i++) {
+        PlayerInfo.recieveText[i] = '1';
+        infonow[i] = '1';
+    }
+    for (int i = 0; i < dishsize(TASK); i++) {
+        PlayerInfo.recieveText[i] = '0';
+        infonow[i] = '0';
+    }
     for (int i = 0; i < dishsize(task); i++)
     {
         if (20 <= cookbook[task][i] && cookbook[task][i] <= 25)
         {
-            task_finish(DishType(cookbook[task][i]));
+            task_finish(DishType(cookbook[task][i]), task_root);
         }
-    }
+    }TASK = task; INFO = infonow;
     Print_player(); cout << "Now Task is" << task << endl;
     MapInfo mapp;
     double cook_x = 8.5, cook_y = 24.5;
     double spawn_x = 7.5, spawn_y = 41.5;
-    info_clear(); Begin();
-    while (!info_decide(task) && checktask(task)) {
-        if (((PlayerInfo.position.x - (cook_x - 1)) < 1e-7) && ((PlayerInfo.position.y - cook_y) < 1e-7)) {
+    while (!info_decide(task,infonow) && checktask(task_root)) {
+        if (((PlayerInfo.position.x - (cook_x - 1)) < 1e-4) && ((PlayerInfo.position.y - cook_y) < 1e-4)) {
+            cout << "!!!!!!!!!!!!!!!!" << endl;
             THUAI3::move(Up, 0);
             for (int i = 0; i < dishsize(task); ++i)
                 if (infonow[checkdish[task][cookbook[task][i]] - 1] == '0') {
@@ -392,14 +357,14 @@ void task_finish(DishType task) {
         else put(1, 1.57, true);
         Sleep(1000); Print_player(); cout << task << endl;
     }
-    if (!checktask(task)) return;//{ tryfault = 1; return; }
+    if (!checktask(task_root)) return;//{ tryfault = 1; return; }
     THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task) + 100);
+    Sleep(dish_cooktime(task) * 1.2);
     if (task >= 26)
     {
         THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
-        if (checktask(task)) THUAI3::use(0, 0, 0);
+        if (checktask(task_root)) THUAI3::use(0, 0, 0);
         else put(1, 1.57, true);
         return;
     }
@@ -419,9 +384,9 @@ void play()
         if (PlayerInfo.id & 1) {
             Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
             THUAI3::move(Right, 0);
-            task_finish(task_list.back());//task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
-            PauseCommunication();
-            Sleep(10000);
+            task_finish(task_list.back(),task_list.back());//task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
+            //PauseCommunication();
+            //Sleep(10000);
         }
     }
 }
