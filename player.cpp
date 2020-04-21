@@ -214,28 +214,10 @@ int dish_cooktime(DishType dd) {
     if (dd == SpicedPot) return 60000;
 }
 
-/*void info_clear() {
-    for (int i = 0; i <= 15; i++) {
-        PlayerInfo.recieveText[i] = '1';
-        infonow[i] = '1';
-    }
-    for (int i = 0; i < dishsize(TASK); i++) {
-        PlayerInfo.recieveText[i] = '0';
-        infonow[i] = '0';
-    }
-}*/
-
 bool checktask(DishType dd) {
     for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
         if (*iter == dd) return 1;
     return 0;
-}
-
-void info_add(DishType cui) { //比如玩家1取到需要食材cui，把信息添加到传递信息再传递
-    string str1 = PlayerInfo.recieveText;
-    str1[checkdish[TASK][cui] - 1] = '1';
-    PlayerInfo.recieveText = str1;
-    speakToFriend(str1);
 }
 
 bool info_decide(DishType dd,string infonow) {
@@ -243,13 +225,6 @@ bool info_decide(DishType dd,string infonow) {
         if (infonow[i] == '0')
             return 0;
     return 1;
-}
-
-void player_wait(int Tim) {
-    for (int i = 1; i <= Tim / 100; ++i) {
-        move(Left, 50);
-        move(Right, 50);
-    }move(Right, 0);
 }
 
 Direction calcdirection(int x1, int y1, int x2, int y2) {
@@ -306,8 +281,7 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
     }
 }
 
-
-void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string *infonow)
+void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string* infonow)
 {
     cout << "put_in_pot_and_cook" << endl;
     cout << "task_tmp" << task_tmp << endl;
@@ -316,48 +290,42 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string *infonow)
     double spawn_x = 7.5, spawn_y = 41.5;
     //把锅里的东西都拿出来
     list<Obj> Objlist_pot = mapp.get_mapcell(cook_x, cook_y);
-    
-    for(list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
+    for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
     {
-        THUAI3::move(Right, 50); Sleep(1000);
-        THUAI3::pick(false,Dish,iter->dish); Sleep(1000);
-        THUAI3::put(1, 1.57, true); Sleep(1000);
+        THUAI3::move(Right, 50); Sleep(500);
+        THUAI3::pick(false, Dish, iter->dish); Sleep(500);
+        THUAI3::put(1, 1.57, true); Sleep(500);
     }
     //放锅里
     for (int i = 0; i < dishsize(task_tmp); ++i)
     {
-        THUAI3::move(Up, 0); Sleep(1000); Print_player();
-        THUAI3::pick(false, Dish, cookbook[task_tmp][i]); Sleep(1000); Print_player();
+        THUAI3::move(Up, 0); Sleep(500); //Print_player();
+        THUAI3::pick(false, Dish, cookbook[task_tmp][i]); Sleep(500); //Print_player();
         list<Obj> Objlist_cook = mapp.get_mapcell(7.5, 24.5 + 1);
-        for (list<Obj>::iterator iiter = Objlist_cook.begin(); iiter != Objlist_cook.end(); ++iiter)
-        {
-            cout << iiter->dish << endl;
-            //a[++i] = iter->dish;
-        }Sleep(10000);
-        //THUAI3::pick(false, Dish, mapp.get_mapcell(cook_x-1, cook_y+1).back().dish); Sleep(1000); Print_player();
-        //THUAI3::move(Down, 50); Sleep(1000);
-        THUAI3::move(Right, 50); Sleep(1000);
-        THUAI3::put(1, 0, true); Sleep(1000); Print_player();
-        if (checkdish[task_cur][cookbook[task_tmp][i]])
-        {
-            infonow[checkdish[task_cur][cookbook[task_tmp][i]] - 1] = '0';
-        }
+        THUAI3::move(Right, 50); Sleep(500);
+        THUAI3::put(1, 0, true); Sleep(500); Print_player();
+        if (checkdish[task_cur][cookbook[task_tmp][i]]) infonow[checkdish[task_cur][cookbook[task_tmp][i]] - 1] = '0';
     }
     //制作
-    if (!checktask(task_tmp)) return;
-    THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task_tmp) * 1.2);
-    //提交
-    THUAI3::pick(false, Block, task_tmp); Sleep(1000); Print_player();
-    if(PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
-    {
-        put(1, 1.57, true); Sleep(1000);
-        return;
-    } 
-    Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50); Sleep(1000);
-    if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
-    else put(1, 1.57, true); Sleep(1000);
-    return;
+    bool flagg = 0;
+    if (!checktask(task_tmp)) flagg = 1;
+    if (!flagg) {
+        THUAI3::use(0, 0, 0);
+        Sleep(dish_cooktime(task_tmp) * 1.1);
+        //提交
+        THUAI3::pick(false, Block, task_tmp); Sleep(500); Print_player();
+        if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
+        {
+            put(1, 3.14, true); Sleep(500);
+        }
+        else {
+            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5);
+            THUAI3::move(Right, 50); Sleep(500);
+            if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
+            else put(1, 1.57, true); 
+            Sleep(500);
+        }
+    }
 }
   
 void task_finish(DishType task,DishType task_root) {
@@ -387,13 +355,12 @@ void task_finish(DishType task,DishType task_root) {
             cout << "!!!!!!!!!!!!!!!!" << endl;
             //把锅里的东西都拿出来
             list<Obj> Objlist_pot = mapp.get_mapcell(cook_x, cook_y);
-            THUAI3::move(Right, 50); Sleep(1000);
+            THUAI3::move(Right, 50); Sleep(500);
             for(list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
                 cout <<"pot dish "<< iter->dish << endl;
-                
-                THUAI3::pick(false,Dish,iter->dish); Sleep(1000);
-                THUAI3::put(1, 1.57, true); Sleep(1000);
+                THUAI3::pick(false,Dish,iter->dish); Sleep(500);
+                THUAI3::put(1, 1.57, true); Sleep(500);
             }
             //遍历所有当前格子中的食材
             THUAI3::move(Up, 0);
@@ -423,22 +390,21 @@ void task_finish(DishType task,DishType task_root) {
             //当前任务如果有食材就先放在锅里？
             for (int i = 0; i < dishsize(task); ++i)
                 if (infonow[checkdish[task][cookbook[task][i]] - 1] == '0') {
-                    THUAI3::pick(false, Dish, cookbook[task][i]); Sleep(1000);
+                    THUAI3::pick(false, Dish, cookbook[task][i]); Sleep(500);
                     if (PlayerInfo.dish != 0) {
-                        THUAI3::move(Right, 50); Sleep(1000);
+                        THUAI3::move(Right, 50); Sleep(500);
                         infonow[checkdish[task][PlayerInfo.dish] - 1] = '1';
-                        THUAI3::put(1, 0, true);
+                        THUAI3::put(1, 0, true); Sleep(500);
                     }
                 }
         }
         //去食物产生点取食材
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x - 1, spawn_y);
-        THUAI3::move(Right, 0); Sleep(1000);
-        pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish);
-
+        THUAI3::move(Right, 0); Sleep(500);
+        pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(500);
         //去工作台放食材
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
-        THUAI3::move(Right, 50); Sleep(1000);
+        THUAI3::move(Right, 50); Sleep(500);
         if (checkdish[task][PlayerInfo.dish] && infonow[checkdish[task][PlayerInfo.dish] - 1] == '0') {
             infonow[checkdish[task][PlayerInfo.dish] - 1] = '1';
             THUAI3::put(1, 0, true);//先放在锅里//，等齐了再放锅里
@@ -451,28 +417,26 @@ void task_finish(DishType task,DishType task_root) {
     //提交
     if (!checktask(task_root)) return;//{ tryfault = 1; return; }
     THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task) * 1.2);
+    Sleep(dish_cooktime(task) * 1.1);
     if (task >= 26)
     {
-        THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
-        if(PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
+        THUAI3::pick(false, Block, task); Sleep(500); Print_player();
+        if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
         {
-            put(1, 1.57, true); Sleep(1000);
-            return;
-        } 
-        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50); Sleep(1000);
-        if (checktask(task_root)) {
-            THUAI3::use(0, 0, 0); //Sleep(1000);
+            put(1, 3.14, true); Sleep(500);
         }
-        else put(1, 1.57, true);
-        Sleep(1000);
-        return;
+        else {
+            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); 
+            move(Right, 50); Sleep(500);
+            if (checktask(task_root)) THUAI3::use(0, 0, 0);
+            else put(1, 1.57, true);
+            Sleep(500);
+        }
     }
     else
     {
-        THUAI3::pick(false, Block, task); Sleep(1000); Print_player();
-        put(1, 1.57, true); Sleep(1000);
-        return;
+        THUAI3::pick(false, Block, task); Sleep(500); Print_player();
+        put(1, 1.57, true); Sleep(500);
     }
 }
 
@@ -482,44 +446,9 @@ void play()
     else {
         Print_player();
         if (PlayerInfo.id & 1) {
-            /*Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
-            THUAI3::move(Right, 0); Sleep(1000);
-            MapInfo mapp;
-            pick(false, Block, mapp.get_mapcell(7.5, 41.5).back().dish); Sleep(1000);
-            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 7.5, 24.5);
-            move(Right, 0); Sleep(1000);
-            put(1, 1.57, true); Sleep(1000);
             Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
-            THUAI3::move(Right, 0); Sleep(1000);
-            pick(false, Block, mapp.get_mapcell(7.5, 41.5).back().dish); Sleep(1000);
-            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 7.5, 24.5);
-            move(Right, 0); Sleep(1000);
-            put(1, 1.57, true); Sleep(1000);
-            list<Obj> Objlist_cook = mapp.get_mapcell(7.5, 24.5 + 1);
-            DishType a[5]; int i = 0;
-            for (list<Obj>::iterator iter = Objlist_cook.begin(); iter != Objlist_cook.end(); ++iter)
-            {
-                cout << iter->dish << endl;
-                a[++i] = iter->dish;
-            }Sleep(10000); 
-            for (int j = 1; j <= i; ++j) {
-                move(Up, 0); Sleep(1000);
-                pick(false, Dish, a[j]); Sleep(1000); Print_player();
-                move(Right, 0); Sleep(1000);
-                put(1, 0, true); Sleep(1000); Print_player();
-            }
-            list<Obj> Objlist_cook1 = mapp.get_mapcell(8.5, 24.5);
-            //DishType a[5]; int i = 0;
-            cout << "size= " << Objlist_cook1.size() << endl;
-            for (list<Obj>::iterator iter = Objlist_cook1.begin(); iter != Objlist_cook1.end(); ++iter)
-            {
-                cout << iter->dish << endl;
-                //a[++i] = iter->dish;
-            }Sleep(10000);*/
-            //task_finish(task_list.back(),task_list.back());//task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
-            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
-            THUAI3::move(Right, 0);
-            task_finish(task_list.back(), task_list.back());//task_finish(SugarCoatedHaws);//Move_player(2.5, 1.5, 40, 40); //从（2.5，1.5）走到（40，40） 目前只能完成与坐标轴平行的操作即只能上下左右 //把小数截尾整数化处理坐标
+            THUAI3::move(Right, 0); Sleep(500);
+            task_finish(task_list.back(), task_list.back());
             //PauseCommunication();
             //Sleep(10000);
         }
