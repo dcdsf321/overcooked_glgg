@@ -311,7 +311,7 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string* infonow)
     if (!checktask(task_tmp)) flagg = 1;
     if (!flagg) {
         THUAI3::use(0, 0, 0);
-        Sleep(dish_cooktime(task_tmp) * 1.1);
+        Sleep(dish_cooktime(task_tmp) * 1.2);
         //提交
         THUAI3::pick(false, Block, task_tmp); Sleep(500); Print_player();
         if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
@@ -417,7 +417,7 @@ void task_finish(DishType task,DishType task_root) {
     //提交
     if (!checktask(task_root)) return;//{ tryfault = 1; return; }
     THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task) * 1.1);
+    Sleep(dish_cooktime(task) * 1.2);
     if (task >= 26)
     {
         THUAI3::pick(false, Block, task); Sleep(500); Print_player();
