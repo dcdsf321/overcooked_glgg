@@ -266,19 +266,28 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
     Direction next[51][51];            //保存行走方向
     while (!(nowx == int(sx) && nowy == int(sy))) { //反向遍历来保存行走路径
         next[vis_pre_x[nowx][nowy]][vis_pre_y[nowx][nowy]] = calcdirection(vis_pre_x[nowx][nowy], vis_pre_y[nowx][nowy], nowx, nowy); //计算前后节点相对位置即得到所需行走方向
-        //cout << "(" << vis_pre_x[nowx][nowy] << "," << vis_pre_y[nowx][nowy] << ")-->(" << nowx << "," << nowy << ")   " << next[vis_pre_x[nowx][nowy]][vis_pre_y[nowx][nowy]]<< endl;
         int tnowx = vis_pre_x[nowx][nowy], tnowy = vis_pre_y[nowx][nowy];
         nowx = tnowx; nowy = tnowy;
-    }//Sleep(10000);
+    }
     //真正的行走操作
     while (!(nowx == int(ex) && nowy == int(ey))) {
-        Print_player();                 //查看目前状态，用于调试
-        //cout <<next[nowx][nowy] << endl;
         THUAI3::move(next[nowx][nowy], 200);  //每次只移动一个单位 //速度为5的情况下
         Sleep(400);                      //挂起以等待操作完成
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
     }
+    Print_player();
+}
+
+void Move_player_near(double sx, double sy, double ex, double ey) {
+    double Ex=233, Ey=233;
+    for (int i = 0; i < 4; ++i) 
+        if (abs(sx - Ex) + abs(sy - Ey) > abs(sx - ex - stepx[i]) + abs(sy - ey - stepy[i])) {
+            Ex=ex+stepx[i];
+            Ey=ey+stepy[i];
+        }
+    Move_player(sx,sy,Ex,Ey);
+    move(calcdirection(Ex, Ey, ex, ey), 0); Sleep(500);
 }
 
 void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string* infonow)
@@ -328,7 +337,7 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string* infonow)
     }
 }
   
-void task_finish(DishType task,DishType task_root) {
+void task_finish(DishType task, DishType task_root) {
     TASK = task; string infonow;
     for (int i = 0; i <= 15; i++) {
         PlayerInfo.recieveText[i] = '1';
@@ -349,24 +358,24 @@ void task_finish(DishType task,DishType task_root) {
     MapInfo mapp;
     double cook_x = 8.5, cook_y = 24.5;
     double spawn_x = 7.5, spawn_y = 41.5;
-    while (!info_decide(task,infonow) && checktask(task_root)) {
+    while (!info_decide(task, infonow) && checktask(task_root)) {
         //工作台旁如果有当前任务的原料就放锅里（改成，工作台旁如果有足够完成一个任务的食材，就把锅里的东西取出来，食材全部放锅里
         if (((PlayerInfo.position.x - (cook_x - 1)) < 1e-4) && ((PlayerInfo.position.y - cook_y) < 1e-4)) {
             cout << "!!!!!!!!!!!!!!!!" << endl;
             //把锅里的东西都拿出来
             list<Obj> Objlist_pot = mapp.get_mapcell(cook_x, cook_y);
             THUAI3::move(Right, 50); Sleep(500);
-            for(list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
+            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
-                cout <<"pot dish "<< iter->dish << endl;
-                THUAI3::pick(false,Dish,iter->dish); Sleep(500);
+                cout << "pot dish " << iter->dish << endl;
+                THUAI3::pick(false, Dish, iter->dish); Sleep(500);
                 THUAI3::put(1, 1.57, true); Sleep(500);
             }
             //遍历所有当前格子中的食材
             THUAI3::move(Up, 0);
-            list<Obj> Objlist_cook = mapp.get_mapcell(cook_x - 1, cook_y+1);
-            int checkdish_cook[51]={0};
-            for(list<Obj>::iterator iter = Objlist_cook.begin(); iter != Objlist_cook.end(); ++iter)
+            list<Obj> Objlist_cook = mapp.get_mapcell(cook_x - 1, cook_y + 1);
+            int checkdish_cook[51] = { 0 };
+            for (list<Obj>::iterator iter = Objlist_cook.begin(); iter != Objlist_cook.end(); ++iter)
             {
                 checkdish_cook[iter->dish] = 1;
             }
@@ -376,13 +385,13 @@ void task_finish(DishType task,DishType task_root) {
                 bool flag = true;
                 for (int i = 0; i < dishsize(*iter); i++)
                 {
-                    if(!checkdish_cook[cookbook[*iter][i]])
+                    if (!checkdish_cook[cookbook[*iter][i]])
                     {
-                            flag = false;
-                            break;
+                        flag = false;
+                        break;
                     }
                 }
-                if(flag)
+                if (flag)
                 {
                     put_in_pot_and_cook(*iter, task, &infonow);
                 }
@@ -399,9 +408,12 @@ void task_finish(DishType task,DishType task_root) {
                 }
         }
         //去食物产生点取食材
-        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x - 1, spawn_y);
-        THUAI3::move(Right, 0); Sleep(500);
+        Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x, spawn_y);
         pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(500);
+        while (PlayerInfo.dish == NeedleMushroom) {
+            put(2, 0, true); Sleep(10000);
+            pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(500);
+        }
         //去工作台放食材
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
         THUAI3::move(Right, 50); Sleep(500);
@@ -415,28 +427,29 @@ void task_finish(DishType task,DishType task_root) {
     }
 
     //提交
-    if (!checktask(task_root)) return;//{ tryfault = 1; return; }
-    THUAI3::use(0, 0, 0);
-    Sleep(dish_cooktime(task) * 1.2);
-    if (task >= 26)
-    {
-        THUAI3::pick(false, Block, task); Sleep(500); Print_player();
-        if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
+    if (checktask(task_root)) {
+        THUAI3::use(0, 0, 0);
+        Sleep(dish_cooktime(task) * 1.2);
+        if (task >= 26)
         {
-            put(1, 3.14, true); Sleep(500);
+            THUAI3::pick(false, Block, task); Sleep(500); Print_player();
+            if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
+            {
+                put(1, 3.14, true); Sleep(500);
+            }
+            else {
+                Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5);
+                move(Right, 50); Sleep(500);
+                if (checktask(task_root)) THUAI3::use(0, 0, 0);
+                else put(1, 1.57, true);
+                Sleep(500);
+            }
         }
-        else {
-            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); 
-            move(Right, 50); Sleep(500);
-            if (checktask(task_root)) THUAI3::use(0, 0, 0);
-            else put(1, 1.57, true);
-            Sleep(500);
+        else
+        {
+            THUAI3::pick(false, Block, task); Sleep(500); Print_player();
+            put(1, 1.57, true); Sleep(500);
         }
-    }
-    else
-    {
-        THUAI3::pick(false, Block, task); Sleep(500); Print_player();
-        put(1, 1.57, true); Sleep(500);
     }
 }
 
@@ -446,8 +459,7 @@ void play()
     else {
         Print_player();
         if (PlayerInfo.id & 1) {
-            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 6.5, 41.5);
-            THUAI3::move(Right, 0); Sleep(500);
+            Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, 7.5, 41.5);
             task_finish(task_list.back(), task_list.back());
             //PauseCommunication();
             //Sleep(10000);
