@@ -338,12 +338,9 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string *infonow)
         //THUAI3::move(Down, 50); Sleep(1000);
         THUAI3::move(Right, 50); Sleep(1000);
         THUAI3::put(1, 0, true); Sleep(1000); Print_player();
-        for(int j=0; j<dishsize(task_cur);j++)
+        if (checkdish[task_cur][cookbook[task_tmp][i]])
         {
-            if(checkdish[task_cur][cookbook[task_tmp][i]])
-            {
-                infonow[checkdish[task_cur][cookbook[task_tmp][i]] - 1] = '0';
-            }
+            infonow[checkdish[task_cur][cookbook[task_tmp][i]] - 1] = '0';
         }
     }
     //制作
@@ -357,9 +354,9 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur, string *infonow)
         put(1, 1.57, true); Sleep(1000);
         return;
     } 
-    Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50);
+    Move_player(PlayerInfo.position.x, PlayerInfo.position.y, 23.5, 24.5); move(Right, 50); Sleep(1000);
     if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
-    else put(1, 1.57, true);
+    else put(1, 1.57, true); Sleep(1000);
     return;
 }
   
