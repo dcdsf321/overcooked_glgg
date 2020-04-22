@@ -6,39 +6,10 @@
 #include "OS_related.h"
 #include<windows.h>
 #include<queue>
-#include<map>
-#define PX PlayerInfo.position.x
-#define PY PlayerInfo.position.y
+#include<cmath>
 using namespace THUAI3;
 Protobuf::Talent initTalent = Protobuf::Talent::Cook;//指定人物天赋。选手代码必须定义此变量，否则报错
 
-/*
-{int(Protobuf::Flour), {0,10000,0} },
-{int(Protobuf::Noodle), {0,10000,0} },
-{int(Protobuf::Bread), {0,10000,0} },
-{int(Protobuf::CookedRice), {0,10000,0} },
-{int(Protobuf::Ketchup), {0,10000,0} },
-{int(Protobuf::Cream), {0,10000,0} },
-{int(Protobuf::TomatoFriedEgg), {50,10000,60000} },
-{int(Protobuf::TomatoFriedEggNoodle), {100,15000,90000} },
-{int(Protobuf::BeefNoodle), {80,20000,90000} },
-{int(Protobuf::OverRice), {90,20000,90000} },
-{int(Protobuf::YellowPheasant), {100,20000,90000} },
-{int(Protobuf::Barbecue), {55,20000,90000} },
-{int(Protobuf::FrenchFries), {60,15000,90000} },
-{int(Protobuf::PlumJuice), {50,10000,90000} },
-{int(Protobuf::Hamburger), {110,20000,100000} },
-{int(Protobuf::StrawberryIcecream), {60,10000,90000} },
-{int(Protobuf::PopcornChicken), {60,15000,90000} },
-{int(Protobuf::AgaricFriedEgg), {50,15000,90000} },
-{int(Protobuf::Cake), {160,30000,120000} },
-{int(Protobuf::SugarCoatedHaws), {20,10000,60000} },
-{int(Protobuf::FruitSalad), {100,20000,120000} },
-{int(Protobuf::SpicedPot), {0,60000,300000} },
-{int(Protobuf::DarkDish), {-10,60000,30000} },
-{int(Protobuf::OverCookedDish), {-10,60000,300000} },
- 第二个参数为烹饪时间
- */
  //保存初始时的地图，即只有各类墙体的位置信息
 int map_start[50][50] = {
 { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
@@ -148,7 +119,6 @@ int cookbook[51][4] =
     {9,0,0,0},
     {6,7,3,10}
 };
-
 double COOK_x[4] = {8.5,8.5,33.5,41.5};
 double COOK_y[4] = {24.5,24.5,18.5,28.5};
 double SPAWN_x[4] = {7.5,7.5,25.5,42.5};
@@ -157,11 +127,12 @@ double commit_x[4] = {23.5,23.5,26.5,26.5};
 double commit_y[4] = {25.5,25.5,24.5,25.5};
 Direction DIRE_cook[4][2] = { {Right,Up},{Right,Up},{Up,Right},{Right,Up} };
 Direction DIRE_commit[4] = { Right,Right,Left,Left };
+
 int POSI;
 MapInfo mapp;
 int checkdish[50][50];
-bool checkdish_cook[51];
-DishType TASK;
+int checkdish_cook[51];
+//DishType TASK;
 bool checkbegin;
 int vis_pre_x[51][51], vis_pre_y[51][51];
 
@@ -195,7 +166,7 @@ void Begin() {
 }
 
 //输出人物当前信息
-void Print_player() {
+/*void Print_player() {
     cout << "-----------------------------------------------------------------------------------" << endl;
     cout << "ID: " << PlayerInfo.id << endl;
     cout << "xy_position: " << PlayerInfo.position.x << " " << PlayerInfo.position.y << endl;
@@ -209,7 +180,7 @@ void Print_player() {
     cout << "recieve_Text: " << PlayerInfo.recieveText << endl;
     cout << "Task: " << TASK << endl;
     cout << "-----------------------------------------------------------------------------------" << endl;
-}
+}*/
 
 int dishsize(DishType dd) {
     if (dd == Flour || dd == Noodle || dd == CookedRice || dd == Ketchup || dd == Cream || dd == SugarCoatedHaws) return 1;
@@ -231,13 +202,6 @@ bool checktask(DishType dd) {
     for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
         if (*iter == dd) return 1;
     return 0;
-}
-
-bool info_decide(DishType dd, string infonow) {
-    for (int i = 0; i <= dishsize(dd); i++)
-        if (infonow[i] == '0')
-            return 0;
-    return 1;
 }
 
 Direction calcdirection(int x1, int y1, int x2, int y2) {
@@ -283,14 +247,14 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
         nowx = tnowx; nowy = tnowy;
     }
     //真正的行走操作
-    Print_player();
+    //Print_player();
     while (!(nowx == int(ex) && nowy == int(ey))) {
         THUAI3::move(next[nowx][nowy], 200);  //每次只移动一个单位 //速度为5的情况下
-        Sleep(400);                      //挂起以等待操作完成
+        Sleep(200);                      //挂起以等待操作完成
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
     }
-    Print_player(); Sleep(1000);
+    //Print_player(); Sleep(1000);
 }
 
 void Move_player_near(double sx, double sy, double ex, double ey) {
@@ -304,17 +268,21 @@ void Move_player_near(double sx, double sy, double ex, double ey) {
     THUAI3::move(calcdirection(Ex, Ey, ex, ey), 0); Sleep(500);
 }
 
-bool findway(DishType start) {
-    bool flag = 1;
+int findway(DishType start) {
+    int flag = 1;
     if (!checkdish_cook[start]) {
         if (dishsize(start) == 0) flag = 0;
-        for (int i = 0; i < dishsize(start); ++i)
-            if (!findway(DishType(cookbook[start][i]))) {
+        for (int i = 0; i < dishsize(start); ++i) {
+            int x; x = findway(DishType(cookbook[start][i]));
+            if (!x) {
                 flag = 0;
                 break;
             }
+            else { flag = min(flag, x); }
+        }
     }
-    if (flag) checkdish_cook[start] = 1;
+    else flag = checkdish_cook[start];
+    if (flag) checkdish_cook[start] =flag;
     return flag;
 }
 
@@ -330,70 +298,112 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
         if (iter->dish!=0) tmpp[++tot] = iter->dish;
     }
     for (int i = 1; i <= tot; ++i) {
-        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(500);
-        THUAI3::pick(false, Dish, tmpp[i]); Sleep(500);
+        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
+        THUAI3::pick(false, Dish, tmpp[i]); Sleep(50);
         if (POSI != 2) THUAI3::put(1, 1.57, true);
         else THUAI3::put(1, -1.57, true);
-        Sleep(500);
+        Sleep(50);
     }
     //放锅里
     for (int i = 0; i < dishsize(task_tmp); ++i)
     {
         if (cookbook[task_tmp][i] >= 20 && cookbook[task_tmp][i] <= 25) put_in_pot_and_cook(DishType(cookbook[task_tmp][i]), task_cur);
-        THUAI3::move(DIRE_cook[POSI][1], 0); Sleep(500); 
-        THUAI3::pick(false, Dish, cookbook[task_tmp][i]); Sleep(500); 
-        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(500);
-        THUAI3::put(1, 0, true); Sleep(500); Print_player();
+        --checkdish_cook[cookbook[task_tmp][i]];
+        THUAI3::move(DIRE_cook[POSI][1], 0); Sleep(50); 
+        THUAI3::pick(false, Dish, cookbook[task_tmp][i]); Sleep(50); 
+        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
+        THUAI3::put(1, 0, true); Sleep(50); //Print_player();
     }
     //制作
+    //cout << "task_tmp= "<<task_tmp << endl;
     bool flagg = 0;
-    if (!checktask(task_tmp) && task_tmp > 25) flagg = 1;
     if (!flagg) {
-        THUAI3::use(0, 0, 0);
-        Sleep(dish_cooktime(task_tmp) * 1.05);
+        THUAI3::use(0, 0, 0); Sleep(50);
+        Sleep(dish_cooktime(task_tmp));
         //提交
-        THUAI3::pick(false, Block, task_tmp); Sleep(500); Print_player();
+        THUAI3::pick(false, Block, task_tmp); Sleep(50); //Print_player();
         if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
         {
-            THUAI3::put(1, 3.14, true); Sleep(500);
+            THUAI3::put(1, 3.14, true); Sleep(50);
         }
         else if (PlayerInfo.dish >= 20 && PlayerInfo.dish <= 25) {
             if (POSI != 2) THUAI3::put(1, 1.57, true);
             else THUAI3::put(1, -1.57, true);
-            Sleep(500);
+            Sleep(50);
         }
         else {
             Move_player(PlayerInfo.position.x, PlayerInfo.position.y, commit_x[POSI], commit_y[POSI]);
-            THUAI3::move(DIRE_commit[POSI], 50); Sleep(500);
+            THUAI3::move(DIRE_commit[POSI], 50); Sleep(50);
             if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
             else THUAI3::put(1, 1.57, true);
-            Sleep(500);
+            Sleep(50);
             list<Obj> Objlist_pot = mapp.get_mapcell(PlayerInfo.position.x, PlayerInfo.position.y+1);
-            THUAI3::move(Up, 0); Sleep(500);
-            DishType tmppp[100]; int tott=0;
+            THUAI3::move(Up, 0); Sleep(50);
+            DishType tmppp1[100]; int tott1=0;
             for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
                 if (checktask(iter->dish)) {
-                    tmppp[++tott] = iter->dish;
+                    tmppp1[++tott1] = iter->dish;
                 }
             }
-            for (int i = 1; i <= tott; ++i) {
-                THUAI3::pick(false, Dish, tmppp[i]); Sleep(500);
-                THUAI3::move(DIRE_commit[POSI], 0); Sleep(500);
+            for (int i = 1; i <= tott1; ++i) {
+                THUAI3::pick(false, Dish, tmppp1[i]); Sleep(50);
+                THUAI3::move(DIRE_commit[POSI], 0); Sleep(50);
                 if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
                 else {
                     if (POSI < 2) THUAI3::put(1, 1.57, true);
                     else THUAI3::put(1, -1.57, true);
                 }
-                THUAI3::move(Up, 0); Sleep(500);
+                THUAI3::move(Up, 0); Sleep(50);
+            }
+            Objlist_pot = mapp.get_mapcell(PlayerInfo.position.x, PlayerInfo.position.y);
+            //THUAI3::move(Up, 0); Sleep(50);
+            DishType tmppp2[100]; int tott2 = 0;
+            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
+            {
+                if (checktask(iter->dish)) {
+                    tmppp2[++tott2] = iter->dish;
+                }
+            }
+            for (int i = 1; i <= tott2; ++i) {
+                THUAI3::pick(true, Dish, tmppp2[i]); Sleep(50);
+                THUAI3::move(DIRE_commit[POSI], 0); Sleep(50);
+                if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
+                else {
+                    if (POSI < 2) THUAI3::put(1, 1.57, true);
+                    else THUAI3::put(1, -1.57, true);
+                }
+                //THUAI3::move(Up, 0); Sleep(50);
+            }
+            Objlist_pot = mapp.get_mapcell(PlayerInfo.position.x, PlayerInfo.position.y - 1);
+            THUAI3::move(Down, 0); Sleep(50);
+            DishType tmppp3[100]; int tott3 = 0;
+            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
+            {
+                if (checktask(iter->dish)) {
+                    tmppp3[++tott3] = iter->dish;
+                }
+            }
+            for (int i = 1; i <= tott3; ++i) {
+                THUAI3::pick(false, Dish, tmppp3[i]); Sleep(50);
+                THUAI3::move(DIRE_commit[POSI], 0); Sleep(50);
+                if (checktask(task_tmp)) THUAI3::use(0, 0, 0);
+                else {
+                    if (POSI < 2) THUAI3::put(1, 1.57, true);
+                    else THUAI3::put(1, -1.57, true);
+                }
+                THUAI3::move(Down, 0); Sleep(50);
             }
         }
+        if (POSI != 2) Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
+        else Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x, cook_y - 1);
+        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
     }
 }
 
 void task_finish(DishType task, DishType task_root) {
-    TASK = task;
-    Print_player();
+    //TASK = task;
+    //Print_player();
     double cook_x = COOK_x[POSI], cook_y = COOK_y[POSI];
     double spawn_x = SPAWN_x[POSI], spawn_y = SPAWN_y[POSI];
     while (checktask(task_root)) {
@@ -401,18 +411,18 @@ void task_finish(DishType task, DishType task_root) {
         if ((((PlayerInfo.position.x - (cook_x - 1)) < 1e-4) && ((PlayerInfo.position.y - cook_y) < 1e-4)&&POSI!=2)||(POSI==2&&(PlayerInfo.position.x-cook_x<1e-4)&&(PlayerInfo.position.y-cook_y+1<1e-4))) {
             //把锅里的东西都拿出来
             list<Obj> Objlist_pot = mapp.get_mapcell(cook_x, cook_y);
-            THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(500);
+            THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
             DishType tmpp[100]; int tot = 0;
             for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
                 if (iter->dish!=0) tmpp[++tot] = iter->dish;
             }
             for (int i = 1; i <= tot; ++i) {
-                THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(500);
-                THUAI3::pick(false, Dish, tmpp[i]); Sleep(500);
+                THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
+                THUAI3::pick(false, Dish, tmpp[i]); Sleep(50);
                 if (POSI != 2) THUAI3::put(1, 1.57, true);
                 else THUAI3::put(1, -1.57, true);
-                Sleep(500);
+                Sleep(50);
             }
             //遍历所有当前格子中的食材
             THUAI3::move(DIRE_cook[POSI][1], 0);
@@ -420,10 +430,7 @@ void task_finish(DishType task, DishType task_root) {
             if (POSI != 2) Objlist_cook = mapp.get_mapcell(cook_x - 1, cook_y + 1);
             else Objlist_cook = mapp.get_mapcell(cook_x + 1, cook_y - 1);
             for (int i = 1; i <= 50; ++i) checkdish_cook[i] = 0;
-            for (list<Obj>::iterator iter = Objlist_cook.begin(); iter != Objlist_cook.end(); ++iter)
-            {
-                checkdish_cook[iter->dish] = 1;
-            }
+            for (list<Obj>::iterator iter = Objlist_cook.begin(); iter != Objlist_cook.end(); ++iter) ++checkdish_cook[iter->dish];
             //遍历所有任务，看有没有可以做的
             for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
             {
@@ -436,6 +443,9 @@ void task_finish(DishType task, DishType task_root) {
         //去食物产生点取食材
         Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, spawn_x, spawn_y);
         THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(500);
+        while (PlayerInfo.dish == 0) {
+            THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(50);
+        }
         while (PlayerInfo.dish == NeedleMushroom) {
             THUAI3::put(2, 0, true); Sleep(10000);
             THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(500);
@@ -443,10 +453,10 @@ void task_finish(DishType task, DishType task_root) {
         //去工作台放食材
         if (POSI!=2) Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
         else Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x, cook_y-1);
-        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(500);
+        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
         if (POSI != 2) THUAI3::put(1, 1.57, true);
         else THUAI3::put(1, -1.57, true);
-        Sleep(1000); Print_player();
+        Sleep(50); //Print_player();
     }
 }
 
@@ -454,12 +464,10 @@ void play()
 {
     if (!checkbegin) Begin();
     else {
-        Print_player();
+        //Print_player();
         if (PlayerInfo.id & 1) {
             Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[POSI], SPAWN_y[POSI]);
             task_finish(task_list.back(), task_list.back());
-            //PauseCommunication();
-            //Sleep(10000);
         }
     }
 }
