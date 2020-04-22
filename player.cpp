@@ -132,8 +132,8 @@ int POSI;
 MapInfo mapp;
 int checkdish[50][50];
 int checkdish_cook[51];
-//DishType TASK;
 bool checkbegin;
+int checkmember;
 int vis_pre_x[51][51], vis_pre_y[51][51];
 
 void Begin() {
@@ -164,9 +164,9 @@ void Begin() {
     checkdish[39][9] = 1;
     checkdish[40][6] = 1; checkdish[40][7] = 2; checkdish[40][3] = 3; checkdish[40][10] = 4;
 }
-
+/*
 //输出人物当前信息
-/*void Print_player() {
+void Print_player() {
     cout << "-----------------------------------------------------------------------------------" << endl;
     cout << "ID: " << PlayerInfo.id << endl;
     cout << "xy_position: " << PlayerInfo.position.x << " " << PlayerInfo.position.y << endl;
@@ -178,10 +178,10 @@ void Begin() {
     cout << "dish: " << PlayerInfo.dish << endl;
     cout << "tool: " << PlayerInfo.tool << endl;
     cout << "recieve_Text: " << PlayerInfo.recieveText << endl;
-    cout << "Task: " << TASK << endl;
+    //cout << "Task: " << TASK << endl;
     cout << "-----------------------------------------------------------------------------------" << endl;
-}*/
-
+}
+*/
 int dishsize(DishType dd) {
     if (dd == Flour || dd == Noodle || dd == CookedRice || dd == Ketchup || dd == Cream || dd == SugarCoatedHaws) return 1;
     if (dd == Bread || dd == TomatoFriedEgg || dd == TomatoFriedEggNoodle || dd == BeefNoodle || dd == Barbecue || dd == FrenchFries || dd == PlumJuice || dd == StrawberryIcecream || dd == PopcornChicken || dd == AgaricFriedEgg) return 2;
@@ -253,6 +253,7 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
         Sleep(200);                      //挂起以等待操作完成
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
+        //Print_player();
     }
     //Print_player(); Sleep(1000);
 }
@@ -315,7 +316,6 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
         THUAI3::put(1, 0, true); Sleep(50); //Print_player();
     }
     //制作
-    //cout << "task_tmp= "<<task_tmp << endl;
     bool flagg = 0;
     if (!flagg) {
         THUAI3::use(0, 0, 0); Sleep(50);
@@ -357,7 +357,6 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
                 THUAI3::move(Up, 0); Sleep(50);
             }
             Objlist_pot = mapp.get_mapcell(PlayerInfo.position.x, PlayerInfo.position.y);
-            //THUAI3::move(Up, 0); Sleep(50);
             DishType tmppp2[100]; int tott2 = 0;
             for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
@@ -373,7 +372,6 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
                     if (POSI < 2) THUAI3::put(1, 1.57, true);
                     else THUAI3::put(1, -1.57, true);
                 }
-                //THUAI3::move(Up, 0); Sleep(50);
             }
             Objlist_pot = mapp.get_mapcell(PlayerInfo.position.x, PlayerInfo.position.y - 1);
             THUAI3::move(Down, 0); Sleep(50);
@@ -402,8 +400,6 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
 }
 
 void task_finish(DishType task, DishType task_root) {
-    //TASK = task;
-    //Print_player();
     double cook_x = COOK_x[POSI], cook_y = COOK_y[POSI];
     double spawn_x = SPAWN_x[POSI], spawn_y = SPAWN_y[POSI];
     while (checktask(task_root)) {
@@ -464,8 +460,11 @@ void play()
 {
     if (!checkbegin) Begin();
     else {
-        //Print_player();
-        if (PlayerInfo.id & 1) {
+        if (checkmember == 0) {
+            if (abs(PlayerInfo.position.x - 1.5) < 1e-4 || abs(PlayerInfo.position.x - 49.5) < 1e-4) checkmember = 1;
+            else checkmember = 2;
+        }
+        if (checkmember==1){
             Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[POSI], SPAWN_y[POSI]);
             task_finish(task_list.back(), task_list.back());
         }
