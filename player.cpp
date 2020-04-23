@@ -4,9 +4,9 @@
 #include <iostream>
 #include "OS_related.h"
 #include<queue>
-#include<cmath>
 using namespace THUAI3;
 Protobuf::Talent initTalent = Protobuf::Talent::Cook;//指定人物天赋。选手代码必须定义此变量，否则报错
+
  //保存初始时的地图，即只有各类墙体的位置信息
 int map_start[50][50] = {
     {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
@@ -249,15 +249,12 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
         nowx = tnowx; nowy = tnowy;
     }
     //真正的行走操作
-    //Print_player();
     while (!(nowx == int(ex) && nowy == int(ey))) {
         THUAI3::move(next[nowx][nowy], 200);  //每次只移动一个单位 //速度为5的情况下
         Sleep(200);                      //挂起以等待操作完成
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
-        //Print_player();
     }
-    //Print_player(); Sleep(1000);
 }
 
 void Move_player_near(double sx, double sy, double ex, double ey) {
@@ -301,15 +298,25 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
         if (iter->dish != 0) tmpp[++tot] = iter->dish;
     }
     for (int i = 1; i <= tot; ++i) {
-        THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
+        THUAI3::move(DIRE_cook[POSI][0], 0); Sleep(50);
         THUAI3::pick(false, Dish, tmpp[i]); Sleep(50);
         if (POSI != 2) THUAI3::put(1, 1.57, true);
         else THUAI3::put(1, 0, true);
         Sleep(50);
     }
     //放锅里
+    THUAI3::move(DIRE_cook[POSI][1], 0); Sleep(50);
     for (int i = 0; i < dishsize(task_tmp); ++i)
     {
+        if (cookbook[task_tmp][i] >= 20 && cookbook[task_tmp][i] <= 26) {
+            THUAI3::pick(false, Dish, cookbook[task_tmp][i]); Sleep(50);
+            if (PlayerInfo.dish != 0) {
+                if (POSI != 2) THUAI3::put(1, 0, true);
+                else put(1, 1.57, true);
+                Sleep(50);
+                continue;
+            }
+        }
         if (cookbook[task_tmp][i] >= 20 && cookbook[task_tmp][i] <= 26) put_in_pot_and_cook(DishType(cookbook[task_tmp][i]), task_cur);
     }
     for (int i = 0; i < dishsize(task_tmp); ++i)
@@ -468,9 +475,6 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
                 }
                 THUAI3::move(Down, 0); Sleep(50);
             }
-            if (POSI != 2) Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
-            else Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x, cook_y - 1);
-            THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
         }
     }
 }
