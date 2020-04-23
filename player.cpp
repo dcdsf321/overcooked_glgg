@@ -3,12 +3,10 @@
 #include "player.h"
 #include <iostream>
 #include "OS_related.h"
-#include<windows.h>
 #include<queue>
 #include<cmath>
 using namespace THUAI3;
 Protobuf::Talent initTalent = Protobuf::Talent::Cook;//指定人物天赋。选手代码必须定义此变量，否则报错
-
  //保存初始时的地图，即只有各类墙体的位置信息
 int map_start[50][50] = {
     {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
@@ -143,7 +141,7 @@ void Begin() {
     if (abs(PlayerInfo.position.x - 1.5) < 1e-4 || abs(PlayerInfo.position.x - 49.5) < 1e-4) checkmember = 1;
     else {
         checkmember = 2;
-        POSI = 3-POSI;
+        POSI = 3 - POSI;
     }
     checkbegin = 1;
     checkdish[20][1] = 1;
@@ -521,7 +519,7 @@ void task_finish(DishType task, DishType task_root) {
         while (PlayerInfo.dish == 0) {
             THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(50);
         }
-        while (PlayerInfo.dish == NeedleMushroom||PlayerInfo.dish==0) {
+        while (PlayerInfo.dish == NeedleMushroom || PlayerInfo.dish == 0) {
             THUAI3::put(2, 0, true); Sleep(1000);
             THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(50);
         }
