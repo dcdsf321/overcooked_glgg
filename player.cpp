@@ -81,6 +81,7 @@ int checkdish_cook[51];
 bool checkbegin;
 int checkmember;
 int vis_pre_x[51][51], vis_pre_y[51][51];
+int vis_next_x[51][51], vis_next_y[51][51];
 int taskWait[51];
 
 void Begin() {
@@ -168,6 +169,8 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
         for (int j = 1; j <= 50; ++j) {
             vis_pre_x[i][j] = 0;                //保存进入队列时前置节点的x坐标
             vis_pre_y[i][j] = 0;                //保存进入队列时前置节点的y坐标
+            vis_next_x[i][j] = 0;                
+            vis_next_y[i][j] = 0;
         }
     queue<int> qx, qy; bool flag = 0;            //qx,qy为两分量坐标的队列，flag 判断bfs时是否到达目标节点
     qx.push(int(sx)); qy.push(int(sy));
@@ -191,16 +194,54 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
     Direction next[51][51];            //保存行走方向
     while (!(nowx == int(sx) && nowy == int(sy))) { //反向遍历来保存行走路径
         next[vis_pre_x[nowx][nowy]][vis_pre_y[nowx][nowy]] = calcdirection(vis_pre_x[nowx][nowy], vis_pre_y[nowx][nowy], nowx, nowy); //计算前后节点相对位置即得到所需行走方向
-        int tnowx = vis_pre_x[nowx][nowy], tnowy = vis_pre_y[nowx][nowy];
+        double tnowx = vis_pre_x[nowx][nowy], tnowy = vis_pre_y[nowx][nowy];
+        vis_next_x[int(tnowx)][int(tnowy)] = nowx; vis_next_y[int(tnowx)][int(tnowy)] = nowy;
         nowx = tnowx; nowy = tnowy;
     }
     //真正的行走操作
     while (!(nowx == int(ex) && nowy == int(ey))) {
+        int px = vis_next_x[nowx][nowy], py = vis_next_y[nowx][nowy];
+        double PX = px + 0.5, PY = py + 0.5;
+        double prx = PlayerInfo.position.x, pry = PlayerInfo.position.y;
+        Direction dire = next[nowx][nowy];
         THUAI3::move(next[nowx][nowy], 250);  //每次只移动一个单位 //速度为5的情况下
         Sleep(300);                      //挂起以等待操作完成
         //Print_player();
-        nowx = PlayerInfo.position.x; //迭代
-        nowy = PlayerInfo.position.y;
+        if (abs(prx - PlayerInfo.position.x) < 1e-5 && abs(pry - PlayerInfo.position.y) < 1e-5) {
+            move(Up, 1000); Sleep(1050);
+            move(Right, 1000); Sleep(1050);
+            move(Down, 1000); Sleep(1050);
+            move(Left, 1000); Sleep(1050);
+            Move_player(PlayerInfo.position.x, PlayerInfo.position.y, ex, ey);
+            break;
+        }
+        if (abs(PlayerInfo.position.x - 0.5 - px) < 1e-5 && abs(PlayerInfo.position.y - 0.5 - py) < 1e-5) {
+            nowx = PlayerInfo.position.x; //迭代
+            nowy = PlayerInfo.position.y;
+        }
+        else {
+            if (dire == Up) {
+                if (PY - PlayerInfo.position.y >0) {
+                    move(Up, 50); Sleep(100);
+                }
+            }
+            if (dire == Down) {
+                if (PY - PlayerInfo.position.y < 0) {
+                    move(Down, 50); Sleep(100);
+                }
+            }
+            if (dire == Left) {
+                if (PX - PlayerInfo.position.x < 0) {
+                    move(Left, 50); Sleep(100);
+                }
+            }
+            if (dire == Right) {
+                if (PX - PlayerInfo.position.x > 0) {
+                    move(Right, 50); Sleep(100);
+                }
+            }
+        }
+        
     }
 }
 
