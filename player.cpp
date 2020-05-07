@@ -13,8 +13,8 @@ int map_start[50][50] = {
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
-    {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
-    {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
+    {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
+    {5, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 6, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
@@ -40,7 +40,7 @@ int map_start[50][50] = {
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
-    {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
+    {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
@@ -52,13 +52,14 @@ int map_start[50][50] = {
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 5},
-    {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
+    {5, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
     {5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
-    {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5} };
+    {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
+};
 // 0 : 空地
 // 1 : 提交点，位于中心2x2区域
 // 2 : 食材产生点，共3个
@@ -72,54 +73,11 @@ int map_start[50][50] = {
 double stepx[4] = { 0,-1,1,0 };
 double stepy[4] = { 1,0,0,-1 };
 //上，左，右，下
-int cookbook[51][4] =
-{
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {0,0,0,0},
-    {1,0,0,0},
-    {20,0,0,0},
-    {20,4,0,0},
-    {2,0,0,0},
-    {3,0,0,0},
-    {5,0,0,0},
-    {3,4,0,0},
-    {26,21,0,0},
-    {11,21,0,0},
-    {23,12,18,0},
-    {23,13,14,0},
-    {12,15,0,0},
-    {14,24,0,0},
-    {8,9,0,0},
-    {22,11,15,0},
-    {10,25,0,0},
-    {13,24,0,0},
-    {16,4,0,0},
-    {4,20,25,10},
-    {9,0,0,0},
-    {6,7,3,10}
-};
+int cookbook[51][4];
 double COOK_x[4] = { 8.5,8.5,33.5,41.5 };
 double COOK_y[4] = { 24.5,24.5,18.5,28.5 };
-double SPAWN_x[4] = { 7.5,7.5,25.5,42.5 };
-double SPAWN_y[4] = { 41.5,41.5,5.5,40.5 };
+double SPAWN_x[30];
+double SPAWN_y[30];
 double commit_x[4] = { 23.5,23.5,26.5,26.5 };
 double commit_y[4] = { 25.5,25.5,24.5,25.5 };
 Direction DIRE_cook[4][2] = { {Right,Up},{Right,Up},{Up,Right},{Right,Up} };
@@ -144,29 +102,40 @@ void Begin() {
         POSI = 3 - POSI;
     }
     checkbegin = 1;
-    checkdish[20][1] = 1;
-    checkdish[21][20] = 1;
-    checkdish[22][20] = 1; checkdish[22][4] = 2;
-    checkdish[23][2] = 1;
-    checkdish[24][3] = 1;
-    checkdish[25][5] = 1;
-    checkdish[26][3] = 1; checkdish[26][4] = 2;
-    checkdish[27][26] = 1; checkdish[27][21] = 2;
-    checkdish[28][11] = 1; checkdish[28][21] = 2;
-    checkdish[29][23] = 1; checkdish[29][12] = 2; checkdish[29][18] = 3;
-    checkdish[30][23] = 1; checkdish[30][13] = 2; checkdish[30][14] = 3;
-    checkdish[31][12] = 1; checkdish[31][15] = 2;
-    checkdish[32][14] = 1; checkdish[32][24] = 2;
-    checkdish[33][8] = 1; checkdish[33][9] = 2;
-    checkdish[34][22] = 1; checkdish[34][11] = 2; checkdish[34][15] = 3;
-    checkdish[35][10] = 1; checkdish[35][25] = 2;
-    checkdish[36][13] = 1; checkdish[36][24] = 2;
-    checkdish[37][16] = 1; checkdish[37][4] = 2;
-    checkdish[38][4] = 1; checkdish[38][20] = 2; checkdish[38][25] = 3; checkdish[38][10] = 4;
-    checkdish[39][9] = 1;
-    checkdish[40][6] = 1; checkdish[40][7] = 2; checkdish[40][3] = 3; checkdish[40][10] = 4;
+    checkdish[int(Flour)][int(Wheat)] = 1;
+    checkdish[int(Noodle)][int(Flour)] = 1;
+    checkdish[int(Bread)][int(Egg)] = 1; checkdish[int(Bread)][int(Flour)] = 2;
+    checkdish[int(CookedRice)][int(Rice)] = 1;
+    checkdish[int(Ketchup)][int(Tomato)] = 1;
+    checkdish[int(TomatoFriedEgg)][int(Tomato)] = 1; checkdish[int(TomatoFriedEgg)][int(Egg)] = 2;
+    checkdish[int(TomatoFriedEggNoodle)][int(Noodle)] = 1; checkdish[int(TomatoFriedEggNoodle)][int(TomatoFriedEgg)] = 2;
+    checkdish[int(BeefNoodle)][int(Beef)] = 1; checkdish[int(BeefNoodle)][int(Noodle)] = 2;
+    checkdish[int(OverRice)][int(Rice)] = 1; checkdish[int(OverRice)][int(Pork)] = 2; checkdish[int(OverRice)][int(Potato)] = 3;
+    checkdish[int(Barbecue)][int(Pork)] = 1; checkdish[int(Barbecue)][int(Lettuce)] = 2;
+    checkdish[int(FrenchFries)][int(Potato)] = 1; checkdish[int(FrenchFries)][int(Ketchup)] = 2;
+    checkdish[int(Hamburger)][int(Beef)] = 1; checkdish[int(Hamburger)][int(Lettuce)] = 2; checkdish[int(Hamburger)][int(Bread)] = 3; 
+    cookbook[int(Flour)][0] = int(Wheat);
+    cookbook[int(Noodle)][0] = int(Flour);
+    cookbook[int(Bread)][0] = int(Egg); cookbook[int(Bread)][1] = int(Flour);
+    cookbook[int(CookedRice)][0] = int(Rice);
+    cookbook[int(Ketchup)][0] = int(Tomato);
+    cookbook[int(TomatoFriedEgg)][0] = int(Tomato); cookbook[int(TomatoFriedEgg)][1] = int(Egg);
+    cookbook[int(TomatoFriedEggNoodle)][0] = int(Noodle); cookbook[int(TomatoFriedEggNoodle)][1] = int(TomatoFriedEgg);
+    cookbook[int(BeefNoodle)][0] = int(Beef); cookbook[int(BeefNoodle)][1] = int(Noodle);
+    cookbook[int(OverRice)][0] = int(Rice); cookbook[int(OverRice)][1] = int(Pork); cookbook[int(OverRice)][2] = int(Potato);
+    cookbook[int(Barbecue)][0] = int(Pork); cookbook[int(Barbecue)][1] = int(Lettuce);
+    cookbook[int(FrenchFries)][0] = int(Potato); cookbook[int(FrenchFries)][1] = int(Ketchup);
+    cookbook[int(Hamburger)][0] = int(Beef); cookbook[int(Hamburger)][1] = int(Lettuce); cookbook[int(Hamburger)][2] = int(Bread);
+    SPAWN_x[int(Wheat)] = 4.5; SPAWN_y[int(Wheat)] = 24.5;
+    SPAWN_x[int(Rice)] = 5.5; SPAWN_y[int(Rice)] = 5.5;
+    SPAWN_x[int(Tomato)] = 7.5; SPAWN_y[int(Tomato)] = 41.5;
+    SPAWN_x[int(Egg)] = 25.5; SPAWN_y[int(Egg)] = 5.5;
+    SPAWN_x[int(Beef)] = 31.5; SPAWN_y[int(Beef)] = 41.5;
+    SPAWN_x[int(Pork)] = 42.5; SPAWN_y[int(Pork)] = 40.5;
+    SPAWN_x[int(Potato)] = 43.5; SPAWN_y[int(Potato)] = 6.5;
+    SPAWN_x[int(Lettuce)] = 43.5; SPAWN_y[int(Lettuce)] = 25.5;
 }
-/*
+
 //输出人物当前信息
 void Print_player() {
     cout << "-----------------------------------------------------------------------------------" << endl;
@@ -183,21 +152,23 @@ void Print_player() {
     //cout << "Task: " << TASK << endl;
     cout << "-----------------------------------------------------------------------------------" << endl;
 }
-*/
+
 int dishsize(DishType dd) {
-    if (dd == Flour || dd == Noodle || dd == CookedRice || dd == Ketchup || dd == Cream || dd == SugarCoatedHaws) return 1;
-    if (dd == Bread || dd == TomatoFriedEgg || dd == TomatoFriedEggNoodle || dd == BeefNoodle || dd == Barbecue || dd == FrenchFries || dd == PlumJuice || dd == StrawberryIcecream || dd == PopcornChicken || dd == AgaricFriedEgg) return 2;
-    if (dd == OverRice || dd == YellowPheasant || dd == Hamburger) return 3;
-    if (dd == Cake || dd == FruitSalad) return 4;
+    if (dd == Flour || dd == Noodle || dd == CookedRice || dd == Ketchup ) return 1;
+    if (dd == Bread || dd == TomatoFriedEgg || dd == TomatoFriedEggNoodle || dd == BeefNoodle || dd == Barbecue || dd == FrenchFries ) return 2;
+    if (dd == OverRice || dd == Hamburger) return 3;
 }
 
 int dish_cooktime(DishType dd) {
-    if (dd == Flour || dd == Noodle || dd == Bread || dd == CookedRice || dd == Ketchup || dd == Cream || dd == TomatoFriedEgg) return 10000;
-    if (dd == PlumJuice || dd == StrawberryIcecream || dd == SugarCoatedHaws) return 10000;
-    if (dd == TomatoFriedEggNoodle || dd == FrenchFries || dd == PopcornChicken || dd == AgaricFriedEgg) return 15000;
-    if (dd == BeefNoodle || dd == OverRice || dd == YellowPheasant || dd == Barbecue || dd == Hamburger || dd == FruitSalad) return 20000;
-    if (dd == Cake) return 30000;
+    if (dd == Flour || dd == Noodle || dd == Bread || dd == CookedRice || dd == Ketchup ) return 10000;
+    if (dd == FrenchFries ) return 15000;
+    if (dd == TomatoFriedEggNoodle || dd == BeefNoodle || dd == OverRice  || dd == Barbecue || dd == Hamburger || dd == TomatoFriedEgg) return 20000;
     if (dd == SpicedPot) return 60000;
+}
+
+bool checkDishDirection(DishType d) {
+    if (d == TomatoFriedEggNoodle || d == BeefNoodle || d == FrenchFries || d == Hamburger) return 0;
+    return 1;
 }
 
 bool checktask(DishType dd) {
@@ -250,8 +221,9 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
     }
     //真正的行走操作
     while (!(nowx == int(ex) && nowy == int(ey))) {
-        THUAI3::move(next[nowx][nowy], 200);  //每次只移动一个单位 //速度为5的情况下
-        Sleep(200);                      //挂起以等待操作完成
+        THUAI3::move(next[nowx][nowy], 250);  //每次只移动一个单位 //速度为5的情况下
+        Sleep(500);                      //挂起以等待操作完成
+        Print_player();
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
     }
@@ -265,7 +237,7 @@ void Move_player_near(double sx, double sy, double ex, double ey) {
             Ey = ey + stepy[i];
         }
     Move_player(sx, sy, Ex, Ey);
-    THUAI3::move(calcdirection(Ex, Ey, ex, ey), 0); Sleep(50);
+    THUAI3::move(calcdirection(Ex, Ey, ex, ey), 0); Sleep(100);
 }
 
 int findway(DishType start) {
@@ -336,7 +308,7 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
         Sleep(dish_cooktime(task_tmp));
         //提交
         THUAI3::pick(false, Block, task_tmp); Sleep(50); //Print_player();
-        if (PlayerInfo.dish >= 49)//如果是黑暗料理就扔掉
+        if (PlayerInfo.dish ==DarkDish || PlayerInfo.dish==OverCookedDish)//如果是黑暗料理就扔掉
         {
             THUAI3::put(1, 3.14, true); Sleep(50);
         }
@@ -412,9 +384,6 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
                     }
                     THUAI3::move(Down, 0); Sleep(50);
                 }
-                if (POSI != 2) Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x - 1, cook_y);
-                else Move_player(PlayerInfo.position.x, PlayerInfo.position.y, cook_x, cook_y - 1);
-                THUAI3::move(DIRE_cook[POSI][0], 50); Sleep(50);
             }
         }
         else {
@@ -478,7 +447,7 @@ void put_in_pot_and_cook(DishType task_tmp, DishType task_cur)
         }
     }
 }
-
+/*
 void task_finish(DishType task, DishType task_root) {
     double cook_x = COOK_x[POSI], cook_y = COOK_y[POSI];
     double spawn_x = SPAWN_x[POSI], spawn_y = SPAWN_y[POSI];
@@ -523,7 +492,7 @@ void task_finish(DishType task, DishType task_root) {
         while (PlayerInfo.dish == 0) {
             THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(50);
         }
-        while (PlayerInfo.dish == NeedleMushroom || PlayerInfo.dish == 0) {
+        while ( PlayerInfo.dish == 0) {
             THUAI3::put(2, 0, true); Sleep(1000);
             THUAI3::pick(false, Block, mapp.get_mapcell(spawn_x, spawn_y).back().dish); Sleep(50);
         }
@@ -535,15 +504,29 @@ void task_finish(DishType task, DishType task_root) {
         else THUAI3::put(1, 0, true);
         Sleep(50); //Print_player();
     }
+}*/
+
+void task_finish(DishType tasknow) {
+    if (checkDishDirection(tasknow)) {
+        for (int i = 1; i <= dishsize(tasknow); ++i)
+        { }
+    }
 }
 
 void play()
 {
     if (!checkbegin) Begin();
     else {
-        if (checkmember == 1) {
-            Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[POSI], SPAWN_y[POSI]);
-            task_finish(task_list.back(), task_list.back());
-        }
+        Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Wheat)], SPAWN_y[int(Wheat)]);
+        Sleep(1000);
+        THUAI3::pick(false, Block, mapp.get_mapcell(SPAWN_x[int(Wheat)], SPAWN_y[int(Wheat)]).back().dish); Sleep(50);
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Potato)], SPAWN_y[int(Potato)]);
+        //if (checkmember == 1) {
+        //task_finish(task_list.back());// , task_list.back());
+        //}
+        //else {
+        //    Sleep(1000);
+        //    Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Wheat)], SPAWN_y[int(Wheat)]);
+       // }
     }
 }
