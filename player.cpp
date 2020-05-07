@@ -558,11 +558,13 @@ void task_finish(DishType tasknow) {
         //拿生菜+放生菜
         Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Lettuce)], SPAWN_y[int(Lettuce)]);
         THUAI3::pick(false, Block, Lettuce); Sleep(50);
+        while (PlayerInfo.dish == 0) {Sleep(1000); THUAI3::pick(false, Block, Lettuce);}
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[0], COOK_y[0] + 1); Sleep(50);
         THUAI3::put(1, PI, true); Sleep(50);
         //拿牛肉+做汉堡
         Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Beef)], SPAWN_y[int(Beef)]);
         THUAI3::pick(false, Block, Beef); Sleep(50);
+        while (PlayerInfo.dish == 0) { Sleep(1000); THUAI3::pick(false, Block, Beef); }
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[0], COOK_y[0] + 1); Sleep(50);
         THUAI3::put(1, PI, true); Sleep(50);
         Objlist_pot = mapp.get_mapcell(COOK_x[0], COOK_y[0]);
@@ -589,6 +591,95 @@ void task_finish(DishType tasknow) {
         Sleep(dish_cooktime(Hamburger));
         //拿汉堡+交汉堡
         THUAI3::pick(false, Block, Hamburger); Sleep(50);
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, commit_x[3], commit_y[3]);
+        move(Left, 0); Sleep(50);
+        THUAI3::use(0, 0, 0); Sleep(50);
+    }
+    if (tasknow == CookedRice) {
+        //拿米饭+放米饭
+        Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Rice)], SPAWN_y[int(Rice)]);
+        THUAI3::pick(false, Block, Rice); Sleep(50);
+        while (PlayerInfo.dish == 0) { Sleep(1000); THUAI3::pick(false, Block, Rice); }
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[3] - 1, COOK_y[3]);
+        THUAI3::put(1, PI * 1.5, true); Sleep(50);
+        //做米饭
+        list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
+        DishType tmpp[100]; int tot = 0;
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
+        {
+            if (iter->dish != 0) tmpp[++tot] = iter->dish;
+        }
+        for (int i = 1; i <= tot; ++i) {
+            THUAI3::move(Right, 0); Sleep(50);
+            THUAI3::pick(false, Dish, tmpp[i]); Sleep(50);
+            THUAI3::put(1, PI * 1.5, true);
+            Sleep(50);
+        }
+        move(Down, 0); Sleep(50);
+        THUAI3::pick(false, Dish, Rice); Sleep(50);
+        move(Right, 0); Sleep(50);
+        THUAI3::put(1, 0, true); Sleep(50);
+        THUAI3::use(0, 0, 0); Sleep(50);
+        Sleep(dish_cooktime(CookedRice));
+        //拿米饭+交米饭
+        THUAI3::pick(false, Block, CookedRice); Sleep(50);
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, commit_x[1], commit_y[1]);
+        move(Right, 0); Sleep(50);
+        THUAI3::use(0, 0, 0); Sleep(50);
+    }
+    if (tasknow == OverRice) {
+        //拿小麦+放小麦
+        Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Rice)], SPAWN_y[int(Rice)]);
+        THUAI3::pick(false, Block, Rice); Sleep(50);
+        while (PlayerInfo.dish == 0) { Sleep(1000); THUAI3::pick(false, Block, Rice); }
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1] - 1, COOK_y[1] + 1);
+        THUAI3::put(1, 0, true); Sleep(50);
+        //拿猪肉+放猪肉
+        Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Pork)], SPAWN_y[int(Pork)]);
+        THUAI3::pick(false, Block, Pork); Sleep(50);
+        while (PlayerInfo.dish == 0) { Sleep(1000); THUAI3::pick(false, Block, Pork); }
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1] , COOK_y[1] + 2);
+        THUAI3::put(1, PI*1.5, true); Sleep(50);
+        //拿土豆+放土豆
+        Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[int(Potato)], SPAWN_y[int(Potato)]);
+        THUAI3::pick(false, Block, Potato); Sleep(50);
+        while (PlayerInfo.dish == 0) { Sleep(1000); THUAI3::pick(false, Block, Potato); }
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1] - 1, COOK_y[1] + 1);
+        THUAI3::put(1, 0, true); Sleep(50);
+        //清空锅+做盖浇饭
+        list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[1], COOK_y[1]);
+        DishType tmpp[100]; int tot = 0;
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
+        {
+            if (iter->dish != 0) tmpp[++tot] = iter->dish;
+        }
+        for (int i = 1; i <= tot; ++i) {
+            THUAI3::move(Down, 250); Sleep(500);
+            THUAI3::move(Right, 0); Sleep(50);
+            THUAI3::pick(false, Dish, tmpp[i]); Sleep(50);
+            THUAI3::move(Up, 250); Sleep(500);
+            THUAI3::put(1, 0, true);Sleep(50);
+        }
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1] - 1, COOK_y[1] + 1);
+        move(Right, 0); Sleep(50);
+        THUAI3::pick(false, Dish, Rice); Sleep(50);
+        move(Down, 250); Sleep(50);
+        THUAI3::put(1, 0, true); Sleep(50);
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1] - 1, COOK_y[1] + 1);
+        move(Right, 0); Sleep(50);
+        THUAI3::pick(false, Dish, Pork); Sleep(50);
+        move(Down, 250); Sleep(50);
+        THUAI3::put(1, 0, true); Sleep(50);
+        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1] - 1, COOK_y[1] + 1);
+        move(Right, 0); Sleep(50);
+        THUAI3::pick(false, Dish, Potato); Sleep(50);
+        move(Down, 250); Sleep(50);
+        THUAI3::put(1, 0, true); Sleep(50);
+        move(Right, 0); Sleep(50);
+        THUAI3::use(0, 0, 0); Sleep(50);
+        Sleep(dish_cooktime(OverRice));
+        //拿盖浇饭+交盖浇饭
+        THUAI3::pick(false, Block, OverRice); Sleep(50);
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, commit_x[3], commit_y[3]);
         move(Left, 0); Sleep(50);
         THUAI3::use(0, 0, 0); Sleep(50);
