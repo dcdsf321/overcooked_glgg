@@ -177,6 +177,9 @@ Direction calcdirection(int x1, int y1, int x2, int y2) {
     if (x1 == x2 && y1 > y2) return Down;
     if (x1 < x2 && y1 > y2) return RightDown;
 }
+double Errorp(double x) {
+    return abs(x - int(x));
+}
 
 void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xposition, ex=end_position
     DishType checkfinal = DishType(0);
@@ -314,31 +317,30 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
             }
         Direction dire = next[nowx][nowy];
         THUAI3::move(next[nowx][nowy], 1000 / PlayerInfo.moveSpeed);  //每次只移动一个单位 
-        Sleep(300);                      //挂起以等待操作完成
+        Sleep(150);                      //挂起以等待操作完成
         //Print_player();
-        /*
         if (!(abs(PlayerInfo.position.x - prx) < 1e-5 && abs(PlayerInfo.position.y - pry) < 1e-5)) {
-            if (dire == Up) {
-                while (pry - PlayerInfo.position.y > 0) {
-                    THUAI3::move(Up, 50); Sleep(100);
-                }
-            }
-            if (dire == Down) {
-                while (pry - PlayerInfo.position.y < 0) {
-                    THUAI3::move(Down, 50); Sleep(100);
-                }
-            }
-            if (dire == Left) {
-                while (prx - PlayerInfo.position.x < 0) {
-                    THUAI3::move(Left, 50); Sleep(100);
-                }
-            }
-            if (dire == Right) {
-                while (prx - PlayerInfo.position.x > 0) {
+            if ((abs(Errorp(PlayerInfo.position.x) - 0.1) < 1e-5)||(abs(Errorp(PlayerInfo.position.x)-0.3)<1e-5)) {
+                while(abs(Errorp(PlayerInfo.position.x) - 0.5) > 1e-5) {
                     THUAI3::move(Right, 50); Sleep(100);
                 }
             }
-        }*/
+            if ((abs(Errorp(PlayerInfo.position.x) - 0.7) < 1e-5) || (abs(Errorp(PlayerInfo.position.x) - 0.9) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.x) - 0.5) > 1e-5) {
+                    THUAI3::move(Left, 50); Sleep(100);
+                }
+            }
+            if ((abs(Errorp(PlayerInfo.position.y) - 0.1) < 1e-5) || (abs(Errorp(PlayerInfo.position.y) - 0.3) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.y) - 0.5) > 1e-5) {
+                    THUAI3::move(Up, 50); Sleep(100);
+                }
+            }
+            if ((abs(Errorp(PlayerInfo.position.y) - 0.7) < 1e-5) || (abs(Errorp(PlayerInfo.position.y) - 0.9) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.y) - 0.5) > 1e-5) {
+                    THUAI3::move(Down, 50); Sleep(100);
+                }
+            }
+        }
         if (abs(nowx - PlayerInfo.position.x) < 1e-5 && abs(nowy - PlayerInfo.position.y) < 1e-5) return;
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
@@ -349,6 +351,9 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
                 if (iter->tool == WaveGlueBottle || iter->tool == LandMine || iter->tool == TrapTool || iter->tool == FlashBomb) {
                     THUAI3::pick(true, Tool, iter->tool); Sleep(50);
                     THUAI3::use(1, 0, 0); Sleep(50);
+                }
+                else if (iter->tool == BreastPlate) {
+                    THUAI3::pick(true, Tool, iter->tool); Sleep(50);
                 }
             }
     }
@@ -486,29 +491,28 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
         THUAI3::move(next[nowx][nowy], 1000 / PlayerInfo.moveSpeed);  //每次只移动一个单位 
         Sleep(300);                      //挂起以等待操作完成
         //Print_player();
-        /*
         if (!(abs(PlayerInfo.position.x - prx) < 1e-5 && abs(PlayerInfo.position.y - pry) < 1e-5)) {
-            if (dire == Up) {
-                while (pry - PlayerInfo.position.y > 0) {
-                    THUAI3::move(Up, 50); Sleep(100);
-                }
-            }
-            if (dire == Down) {
-                while (pry - PlayerInfo.position.y < 0) {
-                    THUAI3::move(Down, 50); Sleep(100);
-                }
-            }
-            if (dire == Left) {
-                while (prx - PlayerInfo.position.x < 0) {
-                    THUAI3::move(Left, 50); Sleep(100);
-                }
-            }
-            if (dire == Right) {
-                while (prx - PlayerInfo.position.x > 0) {
+            if ((abs(Errorp(PlayerInfo.position.x) - 0.1) < 1e-5) || (abs(Errorp(PlayerInfo.position.x) - 0.3) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.x) - 0.5) > 1e-5) {
                     THUAI3::move(Right, 50); Sleep(100);
                 }
             }
-        }*/
+            if ((abs(Errorp(PlayerInfo.position.x) - 0.7) < 1e-5) || (abs(Errorp(PlayerInfo.position.x) - 0.9) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.x) - 0.5) > 1e-5) {
+                    THUAI3::move(Left, 50); Sleep(100);
+                }
+            }
+            if ((abs(Errorp(PlayerInfo.position.y) - 0.1) < 1e-5) || (abs(Errorp(PlayerInfo.position.y) - 0.3) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.y) - 0.5) > 1e-5) {
+                    THUAI3::move(Up, 50); Sleep(100);
+                }
+            }
+            if ((abs(Errorp(PlayerInfo.position.y) - 0.7) < 1e-5) || (abs(Errorp(PlayerInfo.position.y) - 0.9) < 1e-5)) {
+                while (abs(Errorp(PlayerInfo.position.y) - 0.5) > 1e-5) {
+                    THUAI3::move(Down, 50); Sleep(100);
+                }
+            }
+        }
         nowx = PlayerInfo.position.x; //迭代
         nowy = PlayerInfo.position.y;
         //道具
@@ -520,6 +524,10 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
                     THUAI3::pick(true, Tool, iter->tool); Sleep(50);
                     while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
                     THUAI3::use(1, 0, 0); Sleep(50);
+                }
+                else if (iter->tool == BreastPlate) {
+                    while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
+                    THUAI3::pick(true, Tool, iter->tool); Sleep(50);
                 }
             }
     }
@@ -558,6 +566,7 @@ void task_finish(DishType tasknow) {
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Right, 0); Sleep(50);
@@ -617,6 +626,7 @@ void task_finish(DishType tasknow) {
             Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
             for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
+                if (iter->dish == CookingDish) return;
                 if (iter->dish != 0) tmpp[++tot] = iter->dish;
             }
             THUAI3::move(Right, 0); Sleep(50);
@@ -651,6 +661,7 @@ void task_finish(DishType tasknow) {
         for (int i = 0; i < 100; ++i) tmpp[i] = DishType(0); tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Right, 0); Sleep(50);
@@ -708,6 +719,7 @@ void task_finish(DishType tasknow) {
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Right, 0); Sleep(50);
@@ -745,6 +757,7 @@ void task_finish(DishType tasknow) {
         for (int i = 0; i < 100; ++i) tmpp[i] = DishType(0); tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Down, 0); Sleep(50);
@@ -794,6 +807,7 @@ void task_finish(DishType tasknow) {
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Up, 0); Sleep(50);
@@ -843,6 +857,7 @@ void task_finish(DishType tasknow) {
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Right, 0); Sleep(50);
@@ -902,6 +917,7 @@ void task_finish(DishType tasknow) {
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Right, 0); Sleep(50);
@@ -951,6 +967,7 @@ void task_finish(DishType tasknow) {
         for (int i = 0; i < 100; ++i) tmpp[i] = DishType(0); tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Down, 0); Sleep(50);
@@ -995,6 +1012,7 @@ void task_finish(DishType tasknow) {
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Right, 0); Sleep(50);
@@ -1042,12 +1060,13 @@ void task_finish(DishType tasknow) {
         while (PlayerInfo.dish == 0) { Sleep(50); THUAI3::pick(false, Block, Potato); }
         Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[1], COOK_y[1] -1);
         if (taskfail) return;
-        THUAI3::put(1, 0, true); Sleep(50);
+        THUAI3::put(1, PI, true); Sleep(50);
         //清空锅+做盖浇饭
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[1], COOK_y[1]);
         DishType tmpp[100]; int tot = 0;
         for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
         {
+            if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
         THUAI3::move(Up, 0); Sleep(50);
@@ -1105,6 +1124,7 @@ void play()
                 DishType tmpp[100]; int tot = 0;
                 for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
                 {
+                    if (iter->dish == CookingDish) return;
                     if (iter->dish != 0) tmpp[++tot] = iter->dish;
                 }
                 for (int i = 1; i <= tot; ++i)
@@ -1134,6 +1154,7 @@ void play()
                 DishType tmpp[100]; int tot = 0;
                 for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
                 {
+                    if (iter->dish == CookingDish) return;
                     if (iter->dish != 0) tmpp[++tot] = iter->dish;
                 }
                 for (int i = 1; i <= tot; ++i)
@@ -1162,9 +1183,9 @@ void play()
     else {
         //cout << PlayerInfo.score << endl;
         bool checkwait = 0;
-        Print_player();
+        //Print_player();
         if (PlayerInfo.position.x >= 23 && PlayerInfo.position.x <= 27) {
-            cout << 111 << endl;
+            //cout << 111 << endl;
             while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
             Move_player_1(PlayerInfo.position.x, PlayerInfo.position.y, 24.5, 30.5);
             while (PlayerInfo.recieveText[0] != 'm') Sleep(5); THUAI3::move(Up, 0); Sleep(50);
@@ -1172,6 +1193,7 @@ void play()
             DishType tmpp[100]; int tot = 0;
             for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
+                if (iter->dish == CookingDish) return;
                 if (iter->dish != 0) tmpp[++tot] = iter->dish;
             }
             for (int i = 1; i <= tot; ++i)
@@ -1202,6 +1224,7 @@ void play()
             DishType tmpp[100]; int tot = 0;
             for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
             {
+                if (iter->dish == CookingDish) return;
                 if (iter->dish != 0) tmpp[++tot] = iter->dish;
             }
             for (int i = 1; i <= tot; ++i) {
