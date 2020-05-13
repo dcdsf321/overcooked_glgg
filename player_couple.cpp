@@ -179,6 +179,15 @@ Direction calcdirection(int x1, int y1, int x2, int y2) {
 }
 
 void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xposition, ex=end_position
+    DishType checkfinal = DishType(0);
+    if (abs(ex - SPAWN_x[int(Wheat)]) < 1e-5 && abs(ey - SPAWN_y[int(Wheat)]) < 1e-5) checkfinal = Wheat;
+    if (abs(ex - SPAWN_x[int(Rice)]) < 1e-5 && abs(ey - SPAWN_y[int(Rice)]) < 1e-5) checkfinal = Rice;
+    if (abs(ex - SPAWN_x[int(Tomato)]) < 1e-5 && abs(ey - SPAWN_y[int(Tomato)]) < 1e-5) checkfinal = Tomato;
+    if (abs(ex - SPAWN_x[int(Egg)]) < 1e-5 && abs(ey - SPAWN_y[int(Egg)]) < 1e-5) checkfinal = Egg;
+    if (abs(ex - SPAWN_x[int(Pork)]) < 1e-5 && abs(ey - SPAWN_y[int(Pork)]) < 1e-5) checkfinal = Pork;
+    if (abs(ex - SPAWN_x[int(Beef)]) < 1e-5 && abs(ey - SPAWN_y[int(Beef)]) < 1e-5) checkfinal = Beef;
+    if (abs(ex - SPAWN_x[int(Potato)]) < 1e-5 && abs(ey - SPAWN_y[int(Potato)]) < 1e-5) checkfinal = Potato;
+    if (abs(ex - SPAWN_x[int(Lettuce)]) < 1e-5 && abs(ey - SPAWN_y[int(Lettuce)]) < 1e-5) checkfinal = Lettuce;
     for (int i = 1; i <= 50; ++i)
         for (int j = 1; j <= 50; ++j) {
             vis_pre_x[i][j] = 0;                //保存进入队列时前置节点的x坐标
@@ -214,7 +223,63 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
     }
     //真正的行走操作
     while (!(nowx == int(ex) && nowy == int(ey))) {
-        wait();
+        if (checkfinal!=DishType(0)) {
+            if (abs(nowx - ex) < 5 && abs(nowy - ey) < 5) {
+                list<Obj> Objlist_m = mapp.get_mapcell(ex, ey);
+                bool checkenemy = 0;
+                for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                    if (iter->objType == People) {
+                        checkenemy = 1;
+                        break;
+                    }
+                if (checkenemy) {
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal]-1, SPAWN_y[checkfinal]);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal] - 1, SPAWN_y[checkfinal]);
+                        break;
+                    }
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal] + 1, SPAWN_y[checkfinal]);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal] + 1, SPAWN_y[checkfinal]);
+                        break;
+                    }
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal], SPAWN_y[checkfinal]-1);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal] , SPAWN_y[checkfinal]-1);
+                        break;
+                    }
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal] , SPAWN_y[checkfinal]+1);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal], SPAWN_y[checkfinal]+1);
+                        break;
+                    }
+                }
+            }
+        }
         double prx = vis_next_x[nowx][nowy] + 0.5, pry = vis_next_y[nowx][nowy];
         list<Obj> Objlist_p = mapp.get_mapcell(prx, pry);
         for (list<Obj>::iterator iter = Objlist_p.begin(); iter != Objlist_p.end(); ++iter)
@@ -273,10 +338,19 @@ void Move_player_near(double sx, double sy, double ex, double ey) {
             Ey = ey + stepy[i];
         }
     Move_player(sx, sy, Ex, Ey);
-    THUAI3::move(calcdirection(Ex, Ey, ex, ey), 0); Sleep(50);
+    THUAI3::move(calcdirection(PlayerInfo.position.x, PlayerInfo.position.y, ex, ey), 0); Sleep(50);
 }
 
 void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xposition, ex=end_position
+    DishType checkfinal = DishType(0);
+    if (abs(ex - SPAWN_x[int(Wheat)]) < 1e-5 && abs(ey - SPAWN_y[int(Wheat)]) < 1e-5) checkfinal = Wheat;
+    if (abs(ex - SPAWN_x[int(Rice)]) < 1e-5 && abs(ey - SPAWN_y[int(Rice)]) < 1e-5) checkfinal = Rice;
+    if (abs(ex - SPAWN_x[int(Tomato)]) < 1e-5 && abs(ey - SPAWN_y[int(Tomato)]) < 1e-5) checkfinal = Tomato;
+    if (abs(ex - SPAWN_x[int(Egg)]) < 1e-5 && abs(ey - SPAWN_y[int(Egg)]) < 1e-5) checkfinal = Egg;
+    if (abs(ex - SPAWN_x[int(Pork)]) < 1e-5 && abs(ey - SPAWN_y[int(Pork)]) < 1e-5) checkfinal = Pork;
+    if (abs(ex - SPAWN_x[int(Beef)]) < 1e-5 && abs(ey - SPAWN_y[int(Beef)]) < 1e-5) checkfinal = Beef;
+    if (abs(ex - SPAWN_x[int(Potato)]) < 1e-5 && abs(ey - SPAWN_y[int(Potato)]) < 1e-5) checkfinal = Potato;
+    if (abs(ex - SPAWN_x[int(Lettuce)]) < 1e-5 && abs(ey - SPAWN_y[int(Lettuce)]) < 1e-5) checkfinal = Lettuce;
     for (int i = 1; i <= 50; ++i)
         for (int j = 1; j <= 50; ++j) {
             vis_pre_x_1[i][j] = 0;                //保存进入队列时前置节点的x坐标
@@ -312,7 +386,67 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
     }
     //真正的行走操作
     while (!(nowx == int(ex) && nowy == int(ey))) {
-        wait();
+        if (checkfinal != DishType(0)) {
+            if (abs(nowx - ex) < 5 && abs(nowy - ey) < 5) {
+                list<Obj> Objlist_m = mapp.get_mapcell(ex, ey);
+                bool checkenemy = 0;
+                for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                    if (iter->objType == People) {
+                        checkenemy = 1;
+                        break;
+                    }
+                if (checkenemy) {
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal] - 1, SPAWN_y[checkfinal]);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal] - 1, SPAWN_y[checkfinal]);
+                        break;
+                    }
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal] + 1, SPAWN_y[checkfinal]);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal] + 1, SPAWN_y[checkfinal]);
+                        break;
+                    }
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal], SPAWN_y[checkfinal] - 1);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal], SPAWN_y[checkfinal] - 1);
+                        break;
+                    }
+                    Objlist_m = mapp.get_mapcell(SPAWN_x[checkfinal], SPAWN_y[checkfinal] + 1);
+                    checkenemy = 0;
+                    for (list<Obj>::iterator iter = Objlist_m.begin(); iter != Objlist_m.end(); ++iter)
+                        if (iter->objType == People) {
+                            checkenemy = 1;
+                            break;
+                        }
+                    if (!checkenemy) {
+                        while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
+                        Move_player(PlayerInfo.position.x, PlayerInfo.position.y, SPAWN_x[checkfinal], SPAWN_y[checkfinal] + 1);
+                        break;
+                    }
+                }
+            }
+        }
         double prx = vis_next_x_1[nowx][nowy] + 0.5, pry = vis_next_y_1[nowx][nowy];
         list<Obj> Objlist_p = mapp.get_mapcell(prx, pry);
         for (list<Obj>::iterator iter = Objlist_p.begin(); iter != Objlist_p.end(); ++iter)
@@ -376,7 +510,7 @@ void Move_player_near_1(double sx, double sy, double ex, double ey) {
         }
     Move_player_1(sx, sy, Ex, Ey);
     while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
-    THUAI3::move(calcdirection(Ex, Ey, ex, ey), 0); Sleep(50);
+    THUAI3::move(calcdirection(PlayerInfo.position.x, PlayerInfo.position.y, ex, ey), 0); Sleep(50);
 }
 
 void task_finish(DishType tasknow) {
