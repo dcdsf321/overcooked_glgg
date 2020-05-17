@@ -3,7 +3,6 @@
 #include "player.h"
 #include <iostream>
 #include "OS_related.h"
-#include<queue>
 #include<cmath>
 #define PREX 25.5
 #define PREY 31.5
@@ -21,9 +20,7 @@ double commit_y[4] = { 24.5,25.5,24.5,25.5 };
 
 MapInfo mapp;
 int checkdish_cook[51];
-bool checkbegin,taskfail;
-int checkmember;
-bool vis[51][51];
+bool checkbegin,checkmember;
 int taskWait[51],DD;
 
 unsigned long long timetmp1,timetmp2;
@@ -70,21 +67,21 @@ bool checktask(DishType dd) {
     return 0;
 }
 Direction calcdirection(double x1, double y1, double x2, double y2) {
-    if (x1 <= x2-0.5 && abs(y1 - y2)<0.5) return Right;
-    if (x1 <= x2-0.5 && y1 <= y2-0.5) return RightUp;
-    if (abs(x1- x2)<0.5 && y1 <= y2-0.5) return Up;
-    if (x1-0.5 >= x2 && y1 <= y2-0.5) return LeftUp;
-    if (x1-0.5 >= x2 && abs(y1 - y2)<0.5) return Left;
-    if (x1-0.5 >= x2 && y1-0.5 >= y2) return LeftDown;
-    if (abs(x1- x2)<0.5 && y1-0.5 >= y2) return Down;
-    if (x1 <= x2-0.5 && y1-0.5 >= y2) return RightDown;
+    if (x1 <= x2 - 0.5 && abs(y1 - y2) < 0.5) return Right;
+    if (x1 <= x2 - 0.5 && y1 <= y2 - 0.5) return RightUp;
+    if (abs(x1 - x2) < 0.5 && y1 <= y2 - 0.5) return Up;
+    if (x1 - 0.5 >= x2 && y1 <= y2 - 0.5) return LeftUp;
+    if (x1 - 0.5 >= x2 && abs(y1 - y2) < 0.5) return Left;
+    if (x1 - 0.5 >= x2 && y1 - 0.5 >= y2) return LeftDown;
+    if (abs(x1 - x2) < 0.5 && y1 - 0.5 >= y2) return Down;
+    if (x1 <= x2 - 0.5 && y1 - 0.5 >= y2) return RightDown;
 }
 double dist(double x1, double y1, double x2, double y2) {
     return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 double ang(double x1, double y1, double x2, double y2) {
-    if (x1<=x2) return atan((y2 - y1) / (x2 - x1));
-    else return atan((y2 - y1) / (x2 - x1))+PI;
+    if (x1 <= x2) return atan((y2 - y1) / (x2 - x1));
+    else return atan((y2 - y1) / (x2 - x1)) + PI;
 }
 
 void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xposition, ex=end_position
@@ -155,8 +152,7 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
     else {
         if (abs(ey - sy) < 0.5) {
             if (ex - sx > 0) {
-                THUAI3::move(Right, 50);
-                Sleep(50);
+                THUAI3::move(Right, 50); Sleep(50);
                 if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                     Direction dire_now = Right;
                     for (int i = 1; i <= 7; ++i) {
@@ -167,16 +163,12 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
                         else {
                             THUAI3::move(dire_now, 150); Sleep(150);
                         }
-                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                            vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                            break;
-                        }
+                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                     }
                 }
             }
             else {
-                THUAI3::move(Left, 50);
-                Sleep(50);
+                THUAI3::move(Left, 50); Sleep(50);
                 if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                     Direction dire_now = Left;
                     for (int i = 1; i <= 7; ++i) {
@@ -187,18 +179,14 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
                         else {
                             THUAI3::move(dire_now, 150); Sleep(150);
                         }
-                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                            vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                            break;
-                        }
+                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                     }
                 }
             }
         }
         else if (abs(ex - sx) < 0.5) {
             if (ey - sy > 0) {
-                THUAI3::move(Up, 50);
-                Sleep(50);
+                THUAI3::move(Up, 50); Sleep(50);
                 if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                     Direction dire_now = Up;
                     for (int i = 1; i <= 7; ++i) {
@@ -209,16 +197,12 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
                         else {
                             THUAI3::move(dire_now, 150); Sleep(150);
                         }
-                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                            vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                            break;
-                        }
+                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                     }
                 }
             }
             else {
-                THUAI3::move(Down, 50);
-                Sleep(50);
+                THUAI3::move(Down, 50); Sleep(50);
                 if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                     Direction dire_now = Down;
                     for (int i = 1; i <= 7; ++i) {
@@ -229,17 +213,13 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
                         else {
                             THUAI3::move(dire_now, 150); Sleep(150);
                         }
-                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                            vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                            break;
-                        }
+                        if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                     }
                 }
             }
         }
         else {
-            THUAI3::move(calcdirection(sx, sy, ex, ey), 50);
-            Sleep(50);
+            THUAI3::move(calcdirection(sx, sy, ex, ey), 50); Sleep(50);
             Direction dire_now = calcdirection(sx, sy, ex, ey);
             if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                 for (int i = 1; i <= 7; ++i) {
@@ -250,10 +230,7 @@ void Move_player(double sx, double sy, double ex, double ey) {   //sx=start_xpos
                     else {
                         THUAI3::move(dire_now, 150); Sleep(150);
                     }
-                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                        vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                        break;
-                    }
+                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                 }
             }
         }
@@ -316,8 +293,7 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
     if (abs(ey - sy) < 0.5) {
         if (ex - sx > 0) {
             while (PlayerInfo.recieveText[0] != 'm') Sleep(5); 
-            THUAI3::move(Right, 50);
-            Sleep(50);
+            THUAI3::move(Right, 50); Sleep(50);
             if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                 Direction dire_now = Right;
                 for (int i = 1; i <= 7; ++i) {
@@ -330,17 +306,13 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
                         while (PlayerInfo.recieveText[0] != 'm') Sleep(5); 
                         THUAI3::move(dire_now, 150); Sleep(150);
                     }
-                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                        vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                        break;
-                    }
+                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                 }
             }
         }
         else {
             while (PlayerInfo.recieveText[0] != 'm') Sleep(5); 
-            THUAI3::move(Left, 50);
-            Sleep(50);
+            THUAI3::move(Left, 50); Sleep(50);
             if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                 Direction dire_now = Left;
                 for (int i = 1; i <= 7; ++i) {
@@ -353,10 +325,7 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
                         while (PlayerInfo.recieveText[0] != 'm') Sleep(5); 
                         THUAI3::move(dire_now, 150); Sleep(150);
                     }
-                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                        vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                        break;
-                    }
+                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                 }
             }
         }
@@ -364,8 +333,7 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
     else if (abs(ex - sx) < 0.5) {
         if (ey - sy > 0) {
             while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
-            THUAI3::move(Up, 50);
-            Sleep(50);
+            THUAI3::move(Up, 50); Sleep(50);
             if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                 Direction dire_now = Up;
                 for (int i = 1; i <= 7; ++i) {
@@ -378,17 +346,13 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
                         while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
                         THUAI3::move(dire_now, 150); Sleep(150);
                     }
-                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                        vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                        break;
-                    }
+                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                 }
             }
         }
         else {
             while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
-            THUAI3::move(Down, 50);
-            Sleep(50);
+            THUAI3::move(Down, 50); Sleep(50);
             if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
                 Direction dire_now = Down;
                 for (int i = 1; i <= 7; ++i) {
@@ -401,18 +365,14 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
                         while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
                         THUAI3::move(dire_now, 150); Sleep(150);
                     }
-                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                        vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                        break;
-                    }
+                    if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
                 }
             }
         }
     }
     else {
         while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
-        THUAI3::move(calcdirection(sx, sy, ex, ey), 50);
-        Sleep(50);
+        THUAI3::move(calcdirection(sx, sy, ex, ey), 50); Sleep(50);
         Direction dire_now = calcdirection(sx, sy, ex, ey);
         if (abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5) {
             for (int i = 1; i <= 7; ++i) {
@@ -425,10 +385,7 @@ void Move_player_1(double sx, double sy, double ex, double ey) {   //sx=start_xp
                     while (PlayerInfo.recieveText[0] != 'm') Sleep(5);
                     THUAI3::move(dire_now, 150); Sleep(150);
                 }
-                if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) {
-                    vis[int(PlayerInfo.position.x)][int(PlayerInfo.position.y)] = 0;
-                    break;
-                }
+                if (!(abs(sx - PlayerInfo.position.x) < 1e-5 && abs(sy - PlayerInfo.position.y) < 1e-5)) break;
             }
         }
     }
@@ -480,8 +437,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return;
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -564,8 +520,7 @@ void task_finish(DishType tasknow) {
             }Move_player_near(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[3], COOK_y[3]);
             if (timetmp2 - timetmp1 > 13 * 1000) return;
             Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
-            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-            {
+            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
                 if (iter->dish == CookingDish) return;
                 if (iter->dish != 0) tmpp[++tot] = iter->dish;
             }
@@ -620,8 +575,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return;
         Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
         for (int i = 0; i < 100; ++i) tmpp[i] = DishType(0); tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -708,8 +662,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return;
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -764,8 +717,7 @@ void task_finish(DishType tasknow) {
         }Move_player(PlayerInfo.position.x, PlayerInfo.position.y, COOK_x[0], COOK_y[0] );
         Objlist_pot = mapp.get_mapcell(COOK_x[0], COOK_y[0]);
         for (int i = 0; i < 100; ++i) tmpp[i] = DishType(0); tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -838,8 +790,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return; 
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[1], COOK_y[1]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -912,8 +863,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return;
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -1000,8 +950,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return; 
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -1082,8 +1031,7 @@ void task_finish(DishType tasknow) {
         if (timetmp2 - timetmp1 > 13 * 1000) return; 
         Objlist_pot = mapp.get_mapcell(COOK_x[0], COOK_y[0]);
         for (int i = 0; i < 100; ++i) tmpp[i] = DishType(0); tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -1154,8 +1102,7 @@ void task_finish(DishType tasknow) {
         //做米饭
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[3], COOK_y[3]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -1231,8 +1178,7 @@ void task_finish(DishType tasknow) {
         //清空锅+做盖浇饭
         list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[1], COOK_y[1]);
         DishType tmpp[100]; int tot = 0;
-        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-        {
+        for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter) {
             if (iter->dish == CookingDish) return;
             if (iter->dish != 0) tmpp[++tot] = iter->dish;
         }
@@ -1291,15 +1237,12 @@ void play()
 {
     if (!checkbegin) Begin();
     else if (checkmember == 1) {
-        if ((10 * 60 * 1000 - getGameTime()) <= 90000)
-        {
+        if ((10 * 60 * 1000 - getGameTime()) <= 90000) {
             double maxxjb = 0.0;
             int maxid = 0;
-            for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter)
-            {
+            for (list<DishType>::iterator iter = task_list.begin(); iter != task_list.end(); ++iter) {
                 int id = (int)(*iter - CookedRice);
-                if (average_task_time[id] < (600000 - getGameTime()) && xingjiabi[id]>maxxjb)
-                {
+                if (average_task_time[id] < (600000 - getGameTime()) && xingjiabi[id]>maxxjb) {
                     maxxjb = xingjiabi[id];
                     maxid = id + (int)CookedRice;
                 }
@@ -1311,9 +1254,7 @@ void play()
                 list<Obj> Objlist_pot = mapp.get_mapcell(PREX, PREY);
                 DishType tmpp[100]; int tot = 0;
                 for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-                {
                     if (iter->dish != 0) tmpp[++tot] = iter->dish;
-                }
                 for (int i = 1; i <= tot; ++i)
                     if (checktask(tmpp[i])) {
                         THUAI3::pick(false, Dish, tmpp[i]);
@@ -1337,9 +1278,7 @@ void play()
                 list<Obj> Objlist_pot = mapp.get_mapcell(PREX, PREY);
                 DishType tmpp[100]; int tot = 0;
                 for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-                {
                     if (iter->dish != 0) tmpp[++tot] = iter->dish;
-                }
                 for (int i = 1; i <= tot; ++i)
                     if (checktask(tmpp[i])) {
                         THUAI3::pick(false, Dish, tmpp[i]);
@@ -1368,8 +1307,7 @@ void play()
             //做米饭
             list<Obj> Objlist_pot = mapp.get_mapcell(COOK_x[2], COOK_y[2]);
             DishType tmpp[100]; int tot = 0;
-            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter)
-            {
+            for (list<Obj>::iterator iter = Objlist_pot.begin(); iter != Objlist_pot.end(); ++iter){
                 while (iter->dish == CookingDish) Sleep(1);
                 break;
             }
