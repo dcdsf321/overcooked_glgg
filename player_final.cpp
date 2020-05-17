@@ -11,7 +11,6 @@
 using namespace THUAI3;
 Protobuf::Talent initTalent = Protobuf::Talent::Runner;//指定人物天赋。选手代码必须定义此变量，否则报错
 
- //保存初始时的地图，即只有各类墙体的位置信息
 int task_pro[31][31];
 double COOK_x[4] = { 25.5,41.5,33.5,8.5 };
 double COOK_y[4] = { 38.5,28.5,18.5,24.5 };
